@@ -6,14 +6,13 @@ This is a **planning-only workspace**. There is no application source code here 
 
 The recommended skill order (not enforced):
 
-1. `/grill-me` — Discovery interview to pressure-test the idea
-2. `/write-a-prd` — Formalize requirements into a PRD (GitHub issue)
-3. `/prd-to-plan` — Break the PRD into phased vertical slices (saved to `./plans/`)
-4. `/prd-to-issues` — Create dependency-ordered GitHub issues for dev handoff
+1. `/ask` — Discovery interview to pressure-test the idea
+2. `/blueprint` — Formalize requirements into a PRD (GitHub issue)
+3. `/carve` — Break the PRD into phased vertical slices (saved to `./plans/`)
+4. `/dispatch` — Create dependency-ordered GitHub issues for dev handoff
 
 Additional skills:
-- `/mvp-e` — Standalone MVP advisor. Invoke anytime to check for over-engineering.
-- `/create-skill` — Extend this template with project-specific skills after tech stack is decided.
+- `/lean` — Standalone MVP advisor. Invoke anytime to check for over-engineering.
 
 ## Session Rules
 

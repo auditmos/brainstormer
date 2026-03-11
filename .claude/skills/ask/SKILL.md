@@ -1,9 +1,9 @@
 ---
-name: grill-me
+name: ask
 description: Discovery interview and requirements gathering session. Pressure-test an idea, architecture, or design decision through structured client interviews. Use when the user wants to be challenged on their thinking, explore trade-offs, or vet a plan before committing.
 ---
 
-# Grill Me — Discovery Interview
+# Ask — Discovery Interview
 
 Interview me relentlessly about every aspect of this plan until we reach a shared understanding. Walk down each branch of the design tree, resolving dependencies between decisions one-by-one.
 
@@ -57,6 +57,10 @@ If the conversation reveals domain-specific concerns, probe deeper:
 - Per-tenant customization requirements
 - Tenant onboarding and offboarding processes
 
+## Question Format
+
+See [question-format.md](./references/question-format.md) for numbering rules and answer option formatting.
+
 ## Session Flow
 
 1. **Broad**: Understand the what and why. Let the client describe their vision without interruption, then probe.
@@ -66,7 +70,7 @@ If the conversation reveals domain-specific concerns, probe deeper:
 End every session with:
 - A summary of decisions made
 - A list of open questions that still need answers
-- Suggested next step (usually `/write-a-prd` if discovery is complete)
+- Suggested next step (usually `/blueprint` if discovery is complete)
 
 ## Acceptance Checklist
 

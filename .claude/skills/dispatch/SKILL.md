@@ -1,9 +1,9 @@
 ---
-name: prd-to-issues
+name: dispatch
 description: Convert a PRD into independently-grabbable GitHub issues using vertical slices. Use when the user wants to create issues from a PRD, break down a PRD into tasks, or create GitHub issues from requirements.
 ---
 
-# PRD to Issues
+# Dispatch — PRD to Issues
 
 Break a PRD into independently-grabbable GitHub issues using vertical slices (tracer bullets).
 
@@ -21,15 +21,9 @@ If available, review `./plans/` for related plan files and any prior session dec
 
 ### 3. Draft vertical slices
 
-Break the PRD into **tracer bullet** issues. Each issue is a thin vertical slice that cuts through ALL integration layers end-to-end, NOT a horizontal slice of one layer.
+Break the PRD into **tracer bullet** issues. Each issue is a thin vertical slice that cuts through ALL integration layers end-to-end, NOT a horizontal slice of one layer. Follow the rules in [vertical-slice-rules.md](./references/vertical-slice-rules.md).
 
 Slices may be 'HITL' or 'AFK'. HITL slices require human interaction, such as an architectural decision or a design review. AFK slices can be implemented and merged without human interaction. Prefer AFK over HITL where possible.
-
-<vertical-slice-rules>
-- Each slice delivers a narrow but COMPLETE path through the full system
-- A completed slice is demoable or verifiable on its own
-- Prefer many thin slices over few thick ones
-</vertical-slice-rules>
 
 ### 4. Quiz the user
 
@@ -51,38 +45,8 @@ Iterate until the user approves the breakdown.
 
 ### 5. Create the GitHub issues
 
-For each approved slice, create a GitHub issue using `gh issue create`. Use the issue body template below.
+For each approved slice, create a GitHub issue using `gh issue create`. Use the template in [issue-template.md](./references/issue-template.md).
 
 Create issues in dependency order (blockers first) so you can reference real issue numbers in the "Blocked by" field.
-
-<issue-template>
-## Parent PRD
-
-#<prd-issue-number>
-
-## What to build
-
-A concise description of this vertical slice. Describe the end-to-end behavior, not layer-by-layer implementation. Reference specific sections of the parent PRD rather than duplicating content.
-
-## Acceptance criteria
-
-- [ ] Criterion 1
-- [ ] Criterion 2
-- [ ] Criterion 3
-
-## Blocked by
-
-- Blocked by #<issue-number> (if any)
-
-Or "None - can start immediately" if no blockers.
-
-## User stories addressed
-
-Reference by number from the parent PRD:
-
-- User story 3
-- User story 7
-
-</issue-template>
 
 Do NOT close or modify the parent PRD issue.

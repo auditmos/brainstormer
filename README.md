@@ -25,66 +25,66 @@ Consultants, product owners, founders, and technical leads — working with any 
 ## Quick Start
 
 1. Clone this template into your engagement repo
-2. Run `/grill-me` and describe your idea
+2. Run `/ask` and describe your idea
 3. Follow the workflow through to issue creation
 
 ## Skills
 
 | Skill | Command | Purpose |
 |-------|---------|---------|
-| Grill Me | `/grill-me` | Discovery interview — pressure-test the idea, surface constraints |
-| Write a PRD | `/write-a-prd` | Structured interview to produce a PRD (GitHub issue) |
-| PRD to Plan | `/prd-to-plan` | Break PRD into phased vertical slices (`./plans/`) |
-| PRD to Issues | `/prd-to-issues` | Create dependency-ordered GitHub issues from PRD |
-| MVP Enforcer | `/mvp-e` | Check any decision for over-engineering |
-| Create Skill | `/create-skill` | Extend the template with new skills |
+| Ask | `/ask` | Discovery interview — pressure-test the idea, surface constraints |
+| Blueprint | `/blueprint` | Structured interview to produce a PRD (GitHub issue) |
+| Carve | `/carve` | Break PRD into phased vertical slices (`./plans/`) |
+| Dispatch | `/dispatch` | Create dependency-ordered GitHub issues from PRD |
+| Lean | `/lean` | Check any decision for over-engineering |
+
 
 ## Recommended Workflow
 
-### 1. Discovery — `/grill-me`
+### 1. Discovery — `/ask`
 
 Start here with a rough idea. Claude runs a structured interview covering the problem, users, business model, constraints, and domain-specific concerns. Walk away with a clear summary of decisions and open questions.
 
-### 2. Requirements — `/write-a-prd`
+### 2. Requirements — `/blueprint`
 
 Formalize the discovery output into a Product Requirements Document. Claude interviews you, sketches system components, and submits the PRD as a GitHub issue with user stories, implementation decisions, and validation strategy.
 
-### 3. Planning — `/prd-to-plan`
+### 3. Planning — `/carve`
 
 Break the PRD into tracer-bullet phases. Each phase is a thin vertical slice cutting through the full system end-to-end. Output is a markdown plan in `./plans/`.
 
-### 4. Issues — `/prd-to-issues`
+### 4. Issues — `/dispatch`
 
 Convert the plan into GitHub issues. Each issue is a vertical slice classified as AFK (autonomous) or HITL (needs human input), created in dependency order with blocker links.
 
-> Use `/mvp-e` at any point to gut-check a decision against MVP principles.
+> Use `/lean` at any point to gut-check a decision against MVP principles.
 
 ## Example Session
 
 ```
 # Got a rough idea for a client portal? Start with discovery.
-/grill-me
+/ask
 > "We need a portal where clients can upload documents and track project status"
 > Claude probes: who are the clients, how many, what document types,
 > sensitivity level, existing systems, timeline, budget...
 
 # Formalize into requirements
-/write-a-prd
+/blueprint
 > Claude interviews, creates GitHub issue #1 with full PRD
 
 # Break into phases
-/prd-to-plan
+/carve
 > Creates ./plans/client-portal.md with vertical slices
 
 # Create trackable issues
-/prd-to-issues
+/dispatch
 > "The PRD is issue #1"
 > Creates issues #2-#8 in dependency order, ready for dev handoff
 ```
 
 ## Extending
 
-After the tech stack is decided, use `/create-skill` to add project-specific skills (e.g., TDD workflows, environment variable management, deployment procedures). Brainstormer stays technology-agnostic at the planning layer — implementation skills are added per engagement.
+Brainstormer stays technology-agnostic at the planning layer. After the tech stack is decided, add project-specific skills per engagement (e.g., TDD workflows, deployment procedures).
 
 ---
 

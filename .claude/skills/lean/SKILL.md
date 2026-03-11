@@ -1,5 +1,5 @@
 ---
-name: mvp-e
+name: lean
 description: Enforces MVP development principles — speed over perfection, utility first, simplicity. Use proactively when planning features, architecting solutions, reviewing code, or evaluating technical decisions to prevent over-engineering.
 ---
 
