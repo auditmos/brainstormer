@@ -15,9 +15,9 @@ Ask the user for the PRD GitHub issue number (or URL).
 
 If the PRD is not already in your context window, fetch it with `gh issue view <number>` (with comments).
 
-### 2. Explore the codebase (optional)
+### 2. Review existing context (optional)
 
-If you have not already explored the codebase, do so to understand the current state of the code.
+If available, review `./plans/` for related plan files and any prior session decisions to ensure issues align with established architectural choices.
 
 ### 3. Draft vertical slices
 
@@ -26,7 +26,7 @@ Break the PRD into **tracer bullet** issues. Each issue is a thin vertical slice
 Slices may be 'HITL' or 'AFK'. HITL slices require human interaction, such as an architectural decision or a design review. AFK slices can be implemented and merged without human interaction. Prefer AFK over HITL where possible.
 
 <vertical-slice-rules>
-- Each slice delivers a narrow but COMPLETE path through every layer (schema, API, UI, tests)
+- Each slice delivers a narrow but COMPLETE path through the full system
 - A completed slice is demoable or verifiable on its own
 - Prefer many thin slices over few thick ones
 </vertical-slice-rules>

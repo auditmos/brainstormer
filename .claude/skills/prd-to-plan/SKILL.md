@@ -13,35 +13,31 @@ Break a PRD into a phased implementation plan using vertical slices (tracer bull
 
 The PRD should already be in the conversation. If it isn't, ask the user to paste it or point you to the file.
 
-### 2. Explore the codebase
-
-If you have not already explored the codebase, do so to understand the current architecture, existing patterns, and integration layers.
-
-### 3. Identify durable architectural decisions
+### 2. Identify durable architectural decisions
 
 Before slicing, identify high-level decisions that are unlikely to change throughout implementation:
 
-- Route structures / URL patterns
-- Database schema shape
-- Key data models
+- System architecture style
+- Data model shape and key entities
 - Authentication / authorization approach
 - Third-party service boundaries
+- Key constraints (compliance, performance, budget)
 
 These go in the plan header so every phase can reference them.
 
-### 4. Draft vertical slices
+### 3. Draft vertical slices
 
 Break the PRD into **tracer bullet** phases. Each phase is a thin vertical slice that cuts through ALL integration layers end-to-end, NOT a horizontal slice of one layer.
 
 <vertical-slice-rules>
-- Each slice delivers a narrow but COMPLETE path through every layer (schema, API, UI, tests)
+- Each slice delivers a narrow but COMPLETE path from user-facing behavior through to data persistence
 - A completed slice is demoable or verifiable on its own
 - Prefer many thin slices over few thick ones
 - Do NOT include specific file names, function names, or implementation details that are likely to change as later phases are built
-- DO include durable decisions: route paths, schema shapes, data model names
+- DO include durable decisions: architecture style, data model shapes, entity names
 </vertical-slice-rules>
 
-### 5. Quiz the user
+### 4. Quiz the user
 
 Present the proposed breakdown as a numbered list. For each phase show:
 
@@ -55,7 +51,7 @@ Ask the user:
 
 Iterate until the user approves the breakdown.
 
-### 6. Write the plan file
+### 5. Write the plan file
 
 Create `./plans/` if it doesn't exist. Write the plan as a Markdown file named after the feature (e.g. `./plans/user-onboarding.md`). Use the template below.
 
@@ -68,9 +64,10 @@ Create `./plans/` if it doesn't exist. Write the plan as a Markdown file named a
 
 Durable decisions that apply across all phases:
 
-- **Routes**: ...
-- **Schema**: ...
-- **Key models**: ...
+- **Architecture style**: ...
+- **Data model**: ...
+- **Key entities**: ...
+- **Integrations**: ...
 - (add/remove sections as appropriate)
 
 ---

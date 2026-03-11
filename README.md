@@ -1,124 +1,91 @@
-# How to Use Brainstormer
+# Brainstormer
 
-This template ships with Claude Code skills in `.claude/skills/` that guide you through a structured development workflow — from idea to implementation.
+Take any idea from rough concept to dev-ready deliverables — PRD, phased plan, and dependency-ordered GitHub issues — using structured Claude Code skills.
 
-## Available Skills
+## Why
+
+Scope creep, vague requirements, and dev misalignment kill projects before they start. Brainstormer is a consulting toolkit that forces clarity before a single line of code is written. The output is a structured handoff package that any dev team can pick up and run with.
+
+## Who It's For
+
+Consultants, product owners, founders, and technical leads — working with any tech stack. Clone this template per engagement to guide a client from "I have an idea" to "here are the issues, start building."
+
+## What You Get
+
+- **PRD** — Comprehensive requirements document, submitted as a GitHub issue
+- **Phased plan** — Vertical-slice implementation plan saved to `./plans/`
+- **GitHub issues** — Dependency-ordered, independently-grabbable work items with HITL/AFK classification
+
+## Prerequisites
+
+- [Claude Code CLI](https://docs.anthropic.com/en/docs/claude-code)
+- [GitHub CLI](https://cli.github.com/) (`gh`) — authenticated
+- A GitHub repository for the engagement
+
+## Quick Start
+
+1. Clone this template into your engagement repo
+2. Run `/grill-me` and describe your idea
+3. Follow the workflow through to issue creation
+
+## Skills
 
 | Skill | Command | Purpose |
 |-------|---------|---------|
-| Grill Me | `/grill-me` | Pressure-test an idea or design before committing |
-| Write a PRD | `/write-a-prd` | Create a Product Requirements Document through structured interview |
-| PRD to Plan | `/prd-to-plan` | Break a PRD into phased vertical slices |
-| PRD to Issues | `/prd-to-issues` | Create GitHub issues from a PRD |
-| TDD | `/tdd` | Implement features using test-driven development |
-| Environment Variables | `/environment-variables` | Add and validate environment variables |
+| Grill Me | `/grill-me` | Discovery interview — pressure-test the idea, surface constraints |
+| Write a PRD | `/write-a-prd` | Structured interview to produce a PRD (GitHub issue) |
+| PRD to Plan | `/prd-to-plan` | Break PRD into phased vertical slices (`./plans/`) |
+| PRD to Issues | `/prd-to-issues` | Create dependency-ordered GitHub issues from PRD |
+| MVP Enforcer | `/mvp-e` | Check any decision for over-engineering |
+| Create Skill | `/create-skill` | Extend the template with new skills |
 
 ## Recommended Workflow
 
-### 1. Explore and validate your idea
+### 1. Discovery — `/grill-me`
 
-Start with `/grill-me` when you have a rough idea but haven't fully thought it through. Claude will interview you relentlessly — walking down each branch of the design tree, resolving dependencies between decisions one-by-one. This is useful for:
+Start here with a rough idea. Claude runs a structured interview covering the problem, users, business model, constraints, and domain-specific concerns. Walk away with a clear summary of decisions and open questions.
 
-- Vetting an architecture decision
-- Exploring trade-offs before committing
-- Stress-testing a design with someone who will push back
+### 2. Requirements — `/write-a-prd`
 
-You don't need to use this every time. If you already have a clear picture of what you want to build, skip straight to writing the PRD.
+Formalize the discovery output into a Product Requirements Document. Claude interviews you, sketches system components, and submits the PRD as a GitHub issue with user stories, implementation decisions, and validation strategy.
 
-### 2. Define requirements
+### 3. Planning — `/prd-to-plan`
 
-```
-/write-a-prd
-```
+Break the PRD into tracer-bullet phases. Each phase is a thin vertical slice cutting through the full system end-to-end. Output is a markdown plan in `./plans/`.
 
-Describe what you want to build. Claude will:
+### 4. Issues — `/prd-to-issues`
 
-1. Ask for a detailed problem description
-2. Explore the codebase to understand current state
-3. Interview you about every aspect of the plan (similar to grill-me, but within the PRD context)
-4. Sketch out major modules, looking for deep modules that encapsulate complexity behind simple interfaces
-5. Write a structured PRD and submit it as a GitHub issue
+Convert the plan into GitHub issues. Each issue is a vertical slice classified as AFK (autonomous) or HITL (needs human input), created in dependency order with blocker links.
 
-The PRD includes: problem statement, solution, user stories, implementation decisions, testing decisions, and scope boundaries.
+> Use `/mvp-e` at any point to gut-check a decision against MVP principles.
 
-### 3. Create an implementation plan
+## Example Session
 
 ```
-/prd-to-plan
-```
-
-Takes the PRD and breaks it into phased **vertical slices** (tracer bullets). Each phase cuts through all layers end-to-end — schema, API, logic, tests — rather than building one horizontal layer at a time. The output is a markdown file saved to `./plans/`.
-
-### 4. Create GitHub issues
-
-```
-/prd-to-issues
-```
-
-Give it the PRD issue number. Claude breaks the plan into independently-grabbable GitHub issues, each classified as:
-
-- **AFK** — Can be implemented without human input
-- **HITL** — Requires human decisions (architecture choices, design reviews)
-
-Issues are created with dependency links so you know what to work on first.
-
-### 5. Implement with TDD
-
-```
-/tdd
-```
-
-Pick an issue and implement it. The TDD skill enforces vertical slices in your test workflow too:
-
-```
-RED   → Write ONE failing test
-GREEN → Write minimal code to pass
-REFACTOR → Clean up, then repeat
-```
-
-Never write all tests first. Each test responds to what you learned from implementing the previous one.
-
-### 6. Add environment variables
-
-```
-/environment-variables
-```
-
-When you need a new env var at any point, this skill walks you through:
-
-1. Adding the Zod schema to `src/lib/env.ts`
-2. Placing the value in `.env` (defaults) or `.env.local` (secrets)
-3. Adding validation tests
-
-## Example: Building a Weather CLI
-
-```
-# 1. Got a rough idea? Stress-test it first
+# Got a rough idea for a client portal? Start with discovery.
 /grill-me
-> "I want to build a CLI that fetches weather data and caches it locally"
-> Claude challenges your caching strategy, API choices, error handling...
+> "We need a portal where clients can upload documents and track project status"
+> Claude probes: who are the clients, how many, what document types,
+> sensitivity level, existing systems, timeline, budget...
 
-# 2. Ready to formalize? Write the PRD
+# Formalize into requirements
 /write-a-prd
-> Claude interviews you, creates GitHub issue #1
+> Claude interviews, creates GitHub issue #1 with full PRD
 
-# 3. Break it into phases
+# Break into phases
 /prd-to-plan
-> Creates ./plans/weather-cli.md with vertical slices
+> Creates ./plans/client-portal.md with vertical slices
 
-# 4. Create trackable issues
+# Create trackable issues
 /prd-to-issues
 > "The PRD is issue #1"
-> Creates issues #2 (fetch endpoint), #3 (cache layer), #4 (CLI interface)...
-
-# 5. Implement each issue
-/tdd
-> "Let's implement issue #2"
-> Red-green-refactor cycle
-
-# 6. Need an API key?
-/environment-variables
-> Adds WEATHER_API_KEY to env schema and .env.local
+> Creates issues #2-#8 in dependency order, ready for dev handoff
 ```
+
+## Extending
+
+After the tech stack is decided, use `/create-skill` to add project-specific skills (e.g., TDD workflows, environment variable management, deployment procedures). Brainstormer stays technology-agnostic at the planning layer — implementation skills are added per engagement.
+
+---
 
 Each skill is conversational — Claude will ask questions and iterate with you before taking action.
