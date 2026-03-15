@@ -79,3 +79,10 @@ Clean. One task, ships in 5 minutes, no abstractions.
 - [ ] Provided concrete simplification alternatives (if needed)
 - [ ] Verified one-task completeness
 - [ ] Verified 5-minute launchability
+
+## Session Rules
+
+- Exhaust one topic fully before moving to the next. No compound questions.
+- Restate decisions back to the client before finalizing.
+- Technology choices appear in deliverables **only** when the client explicitly states them.
+- Tone: Professional, direct, thorough. This is a consulting engagement.

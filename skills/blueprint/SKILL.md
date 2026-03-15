@@ -18,3 +18,19 @@ A deep module (as opposed to a shallow module) is one which encapsulates a lot o
 Check with the user that these components match their expectations. Check with the user which components they want validation criteria for.
 
 4. Once you have a complete understanding of the problem and solution, write the PRD using the template in [prd-template.md](./references/prd-template.md). The PRD should be submitted as a GitHub issue.
+
+## Prerequisites
+
+Before creating GitHub issues, verify:
+1. `gh` CLI is installed and authenticated (`gh auth status`)
+2. Current directory is a git repo with a GitHub remote
+3. User has write access to the repository
+
+If any check fails, inform the user and provide the fix command.
+
+## Session Rules
+
+- Exhaust one topic fully before moving to the next. No compound questions.
+- Restate decisions back to the client before finalizing.
+- Technology choices appear in deliverables **only** when the client explicitly states them.
+- Tone: Professional, direct, thorough. This is a consulting engagement.

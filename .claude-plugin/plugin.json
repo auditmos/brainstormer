@@ -1,0 +1,7 @@
+{
+  "name": "brainstormer",
+  "description": "Structured planning workflow — discovery interviews, PRD creation, vertical-slice phasing, and dependency-ordered GitHub issue generation.",
+  "author": {
+    "name": "Auditmos"
+  }
+}

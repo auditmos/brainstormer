@@ -48,3 +48,10 @@ Iterate until the user approves the breakdown.
 ### 5. Write the plan file
 
 Create `./plans/` if it doesn't exist. Write the plan as a Markdown file named after the feature (e.g. `./plans/user-onboarding.md`). Use the template in [plan-template.md](./references/plan-template.md).
+
+## Session Rules
+
+- Exhaust one topic fully before moving to the next. No compound questions.
+- Restate decisions back to the client before finalizing.
+- Technology choices appear in deliverables **only** when the client explicitly states them.
+- Tone: Professional, direct, thorough. This is a consulting engagement.

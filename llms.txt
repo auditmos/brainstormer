@@ -1,0 +1,25 @@
+# Brainstormer
+
+> Structured planning toolkit that takes ideas from rough concept to dev-ready
+> deliverables — PRD, phased plan, and dependency-ordered GitHub issues.
+
+## Skills
+
+- [Ask — Discovery Interview](skills/ask/SKILL.md): Pressure-test ideas through structured client interviews covering problem, users, business model, constraints, and domain-specific concerns
+- [Blueprint — PRD Creation](skills/blueprint/SKILL.md): Formalize discovery output into a Product Requirements Document, submitted as a GitHub issue
+- [Carve — PRD to Plan](skills/carve/SKILL.md): Break a PRD into tracer-bullet vertical slices saved as a phased implementation plan in ./plans/
+- [Dispatch — PRD to Issues](skills/dispatch/SKILL.md): Convert a PRD into dependency-ordered GitHub issues classified as AFK or HITL
+- [Lean — MVP Advisor](skills/lean/SKILL.md): Check any decision against MVP principles — speed over perfection, utility first, simplicity
+- [Brainstorm — Full Workflow](skills/brainstorm/SKILL.md): Orchestrated workflow guiding through all phases from discovery to issue creation
+
+## Templates & References
+
+- [PRD Template](skills/blueprint/references/prd-template.md): Structure for Product Requirements Documents
+- [Plan Template](skills/carve/references/plan-template.md): Structure for phased implementation plans
+- [Issue Template](skills/dispatch/references/issue-template.md): Structure for GitHub dev issues
+- [Vertical Slice Rules](skills/carve/references/vertical-slice-rules.md): Rules for tracer-bullet slicing
+- [Question Format](skills/ask/references/question-format.md): Interview question numbering and formatting
+
+## Workflow
+
+Recommended order: Ask → Blueprint → Carve → Dispatch. Use Lean at any point.

@@ -72,6 +72,13 @@ End every session with:
 - A list of open questions that still need answers
 - Suggested next step (usually `/blueprint` if discovery is complete)
 
+## Session Rules
+
+- Exhaust one topic fully before moving to the next. No compound questions.
+- Restate decisions back to the client before finalizing.
+- Technology choices appear in deliverables **only** when the client explicitly states them.
+- Tone: Professional, direct, thorough. This is a consulting engagement.
+
 ## Acceptance Checklist
 
 - [ ] Core problem clearly articulated
