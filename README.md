@@ -24,7 +24,7 @@ Consultants, product owners, founders, and technical leads — working with any 
 claude plugin install <repo-url>
 ```
 
-All 6 skills become available via `/` commands in any project.
+All 7 skills become available via `/` commands in any project.
 
 ### Manual Install (Claude Code)
 
@@ -59,6 +59,7 @@ cd brainstormer
 | Blueprint | `/blueprint` | Structured interview to produce a PRD (GitHub issue) |
 | Carve | `/carve` | Break PRD into phased vertical slices (`./plans/`) |
 | Dispatch | `/dispatch` | Create dependency-ordered GitHub issues from PRD |
+| TDD | `/tdd` | Red-green-refactor workflow with GitHub issue + plan integration |
 | Lean | `/lean` | Check any decision for over-engineering |
 
 ## Recommended Workflow
@@ -78,6 +79,10 @@ Break the PRD into tracer-bullet phases. Each phase is a thin vertical slice cut
 ### 4. Issues — `/dispatch`
 
 Convert the plan into GitHub issues. Each issue is a vertical slice classified as AFK (autonomous) or HITL (needs human input), created in dependency order with blocker links.
+
+### 5. Implementation — `/tdd`
+
+Pick up an issue and implement it using red-green-refactor. Pass a GitHub issue number (`/tdd #123`) to pull in scope and acceptance criteria automatically, or start from scratch. The skill reads plans from `./plans/` for architectural context.
 
 > Use `/lean` at any point to gut-check a decision against MVP principles.
 
@@ -116,11 +121,16 @@ Point your agent at `llms.txt` in the repo root for programmatic discovery of al
 /dispatch
 > "The PRD is issue #1"
 > Creates issues #2-#8 in dependency order, ready for dev handoff
+
+# Implement with TDD
+/tdd #2
+> Fetches issue #2, reads ./plans/client-portal.md for context,
+> walks through red-green-refactor cycles with you
 ```
 
 ## Extending
 
-Brainstormer stays technology-agnostic at the planning layer. After the tech stack is decided, add project-specific skills per engagement (e.g., TDD workflows, deployment procedures).
+Brainstormer is technology-agnostic at the planning layer. After the tech stack is decided, add project-specific skills per engagement (e.g., deployment procedures, coding standards).
 
 ## License
 
