@@ -10,6 +10,7 @@ The recommended skill order (not enforced):
 2. `/blueprint` — Formalize requirements into a PRD (GitHub issue)
 3. `/carve` — Break the PRD into phased vertical slices (saved to `./plans/`)
 4. `/dispatch` — Create dependency-ordered GitHub issues for dev handoff
+5. `/tdd` — Implement issues using red-green-refactor with vertical slices (`/tdd #123`)
 
 Additional skills:
 - `/lean` — Standalone MVP advisor. Invoke anytime to check for over-engineering.

@@ -10,6 +10,7 @@
 - [Carve — PRD to Plan](skills/carve/SKILL.md): Break a PRD into tracer-bullet vertical slices saved as a phased implementation plan in ./plans/
 - [Dispatch — PRD to Issues](skills/dispatch/SKILL.md): Convert a PRD into dependency-ordered GitHub issues classified as AFK or HITL
 - [Lean — MVP Advisor](skills/lean/SKILL.md): Check any decision against MVP principles — speed over perfection, utility first, simplicity
+- [TDD — Test-Driven Development](skills/tdd/SKILL.md): Red-green-refactor workflow using vertical slices, with GitHub issue and plan integration
 - [Brainstorm — Full Workflow](skills/brainstorm/SKILL.md): Orchestrated workflow guiding through all phases from discovery to issue creation
 
 ## Templates & References
@@ -19,7 +20,8 @@
 - [Issue Template](skills/dispatch/references/issue-template.md): Structure for GitHub dev issues
 - [Vertical Slice Rules](skills/carve/references/vertical-slice-rules.md): Rules for tracer-bullet slicing
 - [Question Format](skills/ask/references/question-format.md): Interview question numbering and formatting
+- [Mocking Patterns](skills/tdd/references/mocking.md): DI, SDK wrappers, and good vs bad mock examples
 
 ## Workflow
 
-Recommended order: Ask → Blueprint → Carve → Dispatch. Use Lean at any point.
+Recommended order: Ask → Blueprint → Carve → Dispatch → TDD. Use Lean at any point.
