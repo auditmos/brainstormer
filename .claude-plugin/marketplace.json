@@ -1,0 +1,37 @@
+{
+  "name": "brainstormer",
+  "owner": {
+    "name": "Auditmos"
+  },
+  "metadata": {
+    "description": "Planning skills for client discovery, PRD creation, and dev handoff",
+    "version": "1.0.0"
+  },
+  "plugins": [
+    {
+      "name": "ask",
+      "description": "Discovery interview to pressure-test ideas and gather requirements",
+      "source": "./plugins/ask"
+    },
+    {
+      "name": "blueprint",
+      "description": "Create a PRD through structured interview, submitted as a GitHub issue",
+      "source": "./plugins/blueprint"
+    },
+    {
+      "name": "carve",
+      "description": "Break a PRD into phased vertical slices, saved to ./plans/",
+      "source": "./plugins/carve"
+    },
+    {
+      "name": "dispatch",
+      "description": "Convert a PRD into dependency-ordered GitHub issues for dev handoff",
+      "source": "./plugins/dispatch"
+    },
+    {
+      "name": "lean",
+      "description": "MVP advisor — flags over-engineering and enforces simplicity",
+      "source": "./plugins/lean"
+    }
+  ]
+}

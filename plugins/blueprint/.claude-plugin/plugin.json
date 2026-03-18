@@ -1,0 +1,5 @@
+{
+  "name": "blueprint",
+  "description": "Create a PRD through structured interview, submitted as a GitHub issue",
+  "version": "1.0.0"
+}

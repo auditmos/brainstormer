@@ -1,0 +1,5 @@
+{
+  "name": "carve",
+  "description": "Break a PRD into phased vertical slices, saved to ./plans/",
+  "version": "1.0.0"
+}

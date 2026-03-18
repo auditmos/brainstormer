@@ -1,0 +1,5 @@
+{
+  "name": "dispatch",
+  "description": "Convert a PRD into dependency-ordered GitHub issues for dev handoff",
+  "version": "1.0.0"
+}
