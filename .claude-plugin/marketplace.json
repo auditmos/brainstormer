@@ -32,6 +32,16 @@
       "name": "lean",
       "description": "MVP advisor — flags over-engineering and enforces simplicity",
       "source": "./plugins/lean"
+    },
+    {
+      "name": "tdd",
+      "description": "Test-Driven Development workflow using vertical slices",
+      "source": "./plugins/tdd"
+    },
+    {
+      "name": "brainstorm",
+      "description": "Orchestrated planning workflow — guides through discovery, PRD creation, vertical-slice phasing, and GitHub issue generation",
+      "source": "./plugins/brainstorm"
     }
   ]
 }
