@@ -11,37 +11,65 @@
     {
       "name": "ask",
       "description": "Discovery interview to pressure-test ideas and gather requirements",
-      "source": "./plugins/ask"
+      "source": {
+        "source": "git-subdir",
+        "url": "https://github.com/auditmos/brainstormer.git",
+        "path": "plugins/ask"
+      }
     },
     {
       "name": "blueprint",
       "description": "Create a PRD through structured interview, submitted as a GitHub issue",
-      "source": "./plugins/blueprint"
+      "source": {
+        "source": "git-subdir",
+        "url": "https://github.com/auditmos/brainstormer.git",
+        "path": "plugins/blueprint"
+      }
     },
     {
       "name": "carve",
       "description": "Break a PRD into phased vertical slices, saved to ./plans/",
-      "source": "./plugins/carve"
+      "source": {
+        "source": "git-subdir",
+        "url": "https://github.com/auditmos/brainstormer.git",
+        "path": "plugins/carve"
+      }
     },
     {
       "name": "dispatch",
       "description": "Convert a PRD into dependency-ordered GitHub issues for dev handoff",
-      "source": "./plugins/dispatch"
+      "source": {
+        "source": "git-subdir",
+        "url": "https://github.com/auditmos/brainstormer.git",
+        "path": "plugins/dispatch"
+      }
     },
     {
       "name": "lean",
       "description": "MVP advisor — flags over-engineering and enforces simplicity",
-      "source": "./plugins/lean"
+      "source": {
+        "source": "git-subdir",
+        "url": "https://github.com/auditmos/brainstormer.git",
+        "path": "plugins/lean"
+      }
     },
     {
       "name": "tdd",
       "description": "Test-Driven Development workflow using vertical slices",
-      "source": "./plugins/tdd"
+      "source": {
+        "source": "git-subdir",
+        "url": "https://github.com/auditmos/brainstormer.git",
+        "path": "plugins/tdd"
+      }
     },
     {
       "name": "brainstorm",
       "description": "Orchestrated planning workflow — guides through discovery, PRD creation, vertical-slice phasing, and GitHub issue generation",
-      "source": "./plugins/brainstorm"
+      "source": {
+        "source": "git-subdir",
+        "url": "https://github.com/auditmos/brainstormer.git",
+        "path": "plugins/brainstorm"
+      }
     }
   ]
 }
