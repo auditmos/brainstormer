@@ -1,0 +1,5 @@
+{
+  "name": "ship",
+  "description": "Lint, type-check, commit, and push in one flow",
+  "version": "1.0.0"
+}

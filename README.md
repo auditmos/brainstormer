@@ -24,7 +24,7 @@ Consultants, product owners, founders, and technical leads — working with any 
 claude plugin install <repo-url>
 ```
 
-All 7 skills become available via `/` commands in any project.
+All 8 skills become available via `/` commands in any project.
 
 ### Manual Install (Claude Code)
 
@@ -61,6 +61,7 @@ cd brainstormer
 | Dispatch | `/dispatch` | Create dependency-ordered GitHub issues from PRD |
 | TDD | `/tdd` | Red-green-refactor workflow with GitHub issue + plan integration |
 | Lean | `/lean` | Check any decision for over-engineering |
+| Ship | `/ship` | Lint, type-check, commit, and push in one flow |
 
 ## Recommended Workflow
 

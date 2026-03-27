@@ -15,6 +15,7 @@ The recommended skill order (not enforced):
 Additional skills:
 - `/lean` — Standalone MVP advisor. Invoke anytime to check for over-engineering.
 - `/brainstorm` — Orchestrated workflow that guides through all phases end-to-end.
+- `/ship` — Lint, type-check, commit, and push in one flow.
 
 ## Session Rules
 

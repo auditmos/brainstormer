@@ -12,6 +12,7 @@
 - [Lean — MVP Advisor](skills/lean/SKILL.md): Check any decision against MVP principles — speed over perfection, utility first, simplicity
 - [TDD — Test-Driven Development](skills/tdd/SKILL.md): Red-green-refactor workflow using vertical slices, with GitHub issue and plan integration
 - [Brainstorm — Full Workflow](skills/brainstorm/SKILL.md): Orchestrated workflow guiding through all phases from discovery to issue creation
+- [Ship — Lint, Commit & Push](skills/ship/SKILL.md): Lint, type-check, commit, and push in one flow
 
 ## Templates & References
 
