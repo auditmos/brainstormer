@@ -129,6 +129,10 @@ Point your agent at `llms.txt` in the repo root for programmatic discovery of al
 > walks through red-green-refactor cycles with you
 ```
 
+## AI Company
+
+These skills power [Brainstormer Consulting](https://github.com/auditmos/brainstormer-co) — a 5-agent AI company built on the [Agent Companies](https://agentcompanies.io) protocol. Deploy on [Paperclip](https://paperclip.ing) for multi-agent orchestration with org charts, budgets, and approval gates.
+
 ## Extending
 
 Brainstormer is technology-agnostic at the planning layer. After the tech stack is decided, add project-specific skills per engagement (e.g., deployment procedures, coding standards).
