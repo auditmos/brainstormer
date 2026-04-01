@@ -47,12 +47,17 @@ Convert the plan into dependency-ordered GitHub issues:
 - Each issue is a vertical slice classified as AFK or HITL
 - Created in dependency order with blocker links
 
+### After Completion (optional)
+
+Once all issues are created, suggest `/improve-claude-md` if the target project has a CLAUDE.md that could benefit from optimization.
+
 ## Phase Transitions
 
 Before moving to the next phase:
 1. Summarize what was accomplished in the current phase
 2. Confirm the client is ready to proceed
 3. Mention that `/lean` is available at any point to check for over-engineering
+4. Mention that `/llm-council` is available for any strategic decision where the client wants multi-perspective analysis
 
 ## Session Rules
 

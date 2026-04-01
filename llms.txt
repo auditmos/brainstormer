@@ -14,6 +14,7 @@
 - [Brainstorm — Full Workflow](skills/brainstorm/SKILL.md): Orchestrated workflow guiding through all phases from discovery to issue creation
 - [Ship — Lint, Commit & Push](skills/ship/SKILL.md): Lint, type-check, commit, and push in one flow
 - [Improve CLAUDE.md — Structured Optimization](skills/improve-claude-md/SKILL.md): Audit and improve CLAUDE.md files by wrapping sections in conditional importance tags, removing linter overlap, and ensuring project accuracy
+- [LLM Council — Multi-Advisor Analysis](skills/llm-council/SKILL.md): Run a question through 5 AI advisors who analyze independently, peer-review anonymously, then synthesize a verdict
 
 ## Templates & References
 
@@ -25,6 +26,7 @@
 - [Mocking Patterns](skills/tdd/references/mocking.md): DI, SDK wrappers, and good vs bad mock examples
 - [CLAUDE.md Template](skills/improve-claude-md/references/claude-md-template.md): Ideal structure for CLAUDE.md files with conditional importance tags
 - [Important-If Catalog](skills/improve-claude-md/references/important-if-catalog.md): Curated conditions for wrapping CLAUDE.md sections by domain
+- [Council Playbook](skills/llm-council/references/council-playbook.md): Advisor personas and prompt templates for the LLM Council
 
 ## Workflow
 

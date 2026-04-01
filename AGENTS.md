@@ -17,6 +17,7 @@ Additional skills:
 - `/brainstorm` — Orchestrated workflow that guides through all phases end-to-end.
 - `/ship` — Lint, type-check, commit, and push in one flow.
 - `/improve-claude-md` — Audit and improve CLAUDE.md files with conditional importance tags.
+- `/llm-council` — Multi-perspective council for strategic decisions.
 
 ## Session Rules
 
