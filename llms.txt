@@ -13,6 +13,7 @@
 - [TDD — Test-Driven Development](skills/tdd/SKILL.md): Red-green-refactor workflow using vertical slices, with GitHub issue and plan integration
 - [Brainstorm — Full Workflow](skills/brainstorm/SKILL.md): Orchestrated workflow guiding through all phases from discovery to issue creation
 - [Ship — Lint, Commit & Push](skills/ship/SKILL.md): Lint, type-check, commit, and push in one flow
+- [Improve CLAUDE.md — Structured Optimization](skills/improve-claude-md/SKILL.md): Audit and improve CLAUDE.md files by wrapping sections in conditional importance tags, removing linter overlap, and ensuring project accuracy
 
 ## Templates & References
 
@@ -22,6 +23,8 @@
 - [Vertical Slice Rules](skills/carve/references/vertical-slice-rules.md): Rules for tracer-bullet slicing
 - [Question Format](skills/ask/references/question-format.md): Interview question numbering and formatting
 - [Mocking Patterns](skills/tdd/references/mocking.md): DI, SDK wrappers, and good vs bad mock examples
+- [CLAUDE.md Template](skills/improve-claude-md/references/claude-md-template.md): Ideal structure for CLAUDE.md files with conditional importance tags
+- [Important-If Catalog](skills/improve-claude-md/references/important-if-catalog.md): Curated conditions for wrapping CLAUDE.md sections by domain
 
 ## Workflow
 

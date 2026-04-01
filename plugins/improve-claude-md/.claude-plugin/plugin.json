@@ -1,0 +1,5 @@
+{
+  "name": "improve-claude-md",
+  "description": "Audit and improve CLAUDE.md files with conditional importance tags",
+  "version": "1.0.0"
+}

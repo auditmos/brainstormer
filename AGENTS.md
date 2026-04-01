@@ -16,6 +16,7 @@ Additional skills:
 - `/lean` — Standalone MVP advisor. Invoke anytime to check for over-engineering.
 - `/brainstorm` — Orchestrated workflow that guides through all phases end-to-end.
 - `/ship` — Lint, type-check, commit, and push in one flow.
+- `/improve-claude-md` — Audit and improve CLAUDE.md files with conditional importance tags.
 
 ## Session Rules
 

@@ -79,6 +79,15 @@
         "url": "https://github.com/auditmos/brainstormer.git",
         "path": "plugins/ship"
       }
+    },
+    {
+      "name": "improve-claude-md",
+      "description": "Audit and improve CLAUDE.md files with conditional importance tags",
+      "source": {
+        "source": "git-subdir",
+        "url": "https://github.com/auditmos/brainstormer.git",
+        "path": "plugins/improve-claude-md"
+      }
     }
   ]
 }
