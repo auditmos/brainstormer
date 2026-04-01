@@ -50,3 +50,12 @@ For each approved slice, create a GitHub issue using `gh issue create`. Use the 
 Create issues in dependency order (blockers first) so you can reference real issue numbers in the "Blocked by" field.
 
 Do NOT close or modify the parent PRD issue.
+
+## Prerequisites
+
+Before creating GitHub issues, verify:
+1. `gh` CLI is installed and authenticated (`gh auth status`)
+2. Current directory is a git repo with a GitHub remote
+3. User has write access to the repository
+
+If any check fails, inform the user and provide the fix command.

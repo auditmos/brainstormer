@@ -6,5 +6,18 @@
 				"path": "."
 			}
 		}
+	},
+	"hooks": {
+		"PreToolUse": [
+			{
+				"matcher": "Bash(git commit*)",
+				"hooks": [
+					{
+						"type": "command",
+						"command": "./scripts/validate-plugin-sync.sh"
+					}
+				]
+			}
+		]
 	}
 }
