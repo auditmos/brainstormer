@@ -7,16 +7,18 @@ description: "Lint, type-check, commit, and push in one flow. Use when user says
 
 Run all steps in order. Stop immediately on any failure.
 
-## Step 1 — Pre-flight checks (parallel)
+## Step 1 — Pre-flight checks (conditional, parallel)
 
-Run these three commands **in parallel** using the Bash tool:
+Before running checks, detect what tooling is available:
 
-```
-pnpm lint:ci
-pnpm types
-```
+1. Check if `package.json` exists in the repo root.
+2. If it does, look for the `lint:ci` and `types` scripts inside it.
+3. Run **only** the scripts that exist — in parallel:
+   - `pnpm lint:ci` (if script `lint:ci` is defined)
+   - `pnpm types` (if script `types` is defined)
+4. If `package.json` does not exist or neither script is defined, **skip this step entirely** and proceed to Step 2.
 
-If either fails, show the errors and **stop**. Do not commit broken code.
+If any executed check fails, show the errors and **stop**. Do not commit broken code.
 
 ## Step 2 — Gather git context (parallel)
 
