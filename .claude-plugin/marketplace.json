@@ -88,6 +88,15 @@
         "url": "https://github.com/auditmos/brainstormer.git",
         "path": "plugins/improve-claude-md"
       }
+    },
+    {
+      "name": "llm-council",
+      "description": "Multi-perspective advisory council — 5 AI advisors, anonymous peer review, synthesized verdict",
+      "source": {
+        "source": "git-subdir",
+        "url": "https://github.com/auditmos/brainstormer.git",
+        "path": "plugins/llm-council"
+      }
     }
   ]
 }

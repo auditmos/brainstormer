@@ -43,12 +43,23 @@ for skill_dir in "$REPO_ROOT"/skills/*/; do
   done < <(find "$skill_dir" -type f -print0)
 done
 
+# Check marketplace.json lists every skill
+marketplace_json="$REPO_ROOT/.claude-plugin/marketplace.json"
+if [[ -f "$marketplace_json" ]]; then
+  for skill_dir in "$REPO_ROOT"/skills/*/; do
+    skill_name=$(basename "$skill_dir")
+    if ! grep -q "\"name\": \"$skill_name\"" "$marketplace_json"; then
+      errors+=("MARKETPLACE: $skill_name missing from .claude-plugin/marketplace.json")
+    fi
+  done
+fi
+
 if [[ ${#errors[@]} -gt 0 ]]; then
   echo "Plugin sync validation failed:"
   printf '  %s\n' "${errors[@]}"
   echo ""
-  echo "Fix: copy changed files from skills/ to plugins/ before committing."
+  echo "Fix: copy changed files from skills/ to plugins/ and update marketplace.json before committing."
   exit 1
 fi
 
-echo "All skills synced with plugins/."
+echo "All skills synced with plugins and marketplace."

@@ -32,4 +32,4 @@ Professional, direct, thorough. This is a consulting engagement — treat every 
 
 ## Plugin Structure
 
-This repo is both a direct workspace and a distributable plugin. Skills live in `skills/` (plugin convention) with symlinks in `.claude/skills/` for backward compatibility. See `llms.txt` for a machine-readable index of all skills and references.
+This repo is both a direct workspace and a distributable plugin. Skills live in `skills/` with mirrored copies in `plugins/` for marketplace distribution. See `llms.txt` for a machine-readable index of all skills and references.

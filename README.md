@@ -24,7 +24,7 @@ Consultants, product owners, founders, and technical leads — working with any 
 claude plugin install <repo-url>
 ```
 
-All 8 skills become available via `/` commands in any project.
+All 10 skills become available via `/` commands in any project.
 
 ### Manual Install (Claude Code)
 
@@ -62,6 +62,8 @@ cd brainstormer
 | TDD | `/tdd` | Red-green-refactor workflow with GitHub issue + plan integration |
 | Lean | `/lean` | Check any decision for over-engineering |
 | Ship | `/ship` | Lint, type-check, commit, and push in one flow |
+| LLM Council | `/llm-council` | Multi-perspective advisory council for strategic decisions |
+| Improve CLAUDE.md | `/improve-claude-md` | Audit and optimize CLAUDE.md files with conditional importance tags |
 
 ## Recommended Workflow
 
