@@ -41,7 +41,7 @@ If the question is too vague to council, ask **one** clarifying question. Then p
 
 ### Step 2 — Independent Analysis (5 parallel sub-agents)
 
-Spawn all 5 advisors simultaneously using the Agent tool. Each advisor receives:
+Spawn all 5 advisors simultaneously using the Agent tool. **Recommended model for advisors:** sonnet-4.5 (cost/quality balance — each persona is narrow and short-form; Opus×5 in parallel is ~5× cost for marginal gain). Each advisor receives:
 
 - Their persona from the [Council Playbook](./references/council-playbook.md)
 - The framed question
@@ -53,7 +53,7 @@ All 5 must run in parallel. Sequential spawning lets earlier responses bleed int
 
 Collect all 5 responses. Anonymize them as Response A through E — **randomize the mapping** so there's no positional bias.
 
-Spawn 5 new sub-agents in parallel. Each reviewer sees all 5 anonymized responses and answers:
+Spawn 5 new sub-agents in parallel. **Recommended model for reviewers:** sonnet-4.5 (structural comparison across 5 short texts — well within Sonnet's range). Each reviewer sees all 5 anonymized responses and answers:
 
 1. Which response is the strongest and why? (pick one)
 2. Which response has the biggest blind spot?
@@ -63,7 +63,15 @@ Each review: under 200 words.
 
 ### Step 4 — Chairman Synthesis + Output
 
-One agent receives everything de-anonymized: original question, all 5 advisor responses, all 5 peer reviews.
+Spawn one Chairman sub-agent. **Recommended model:** opus-4.7 with extended thinking (high effort) — 11-input synthesis is the cognitive bottleneck of this skill. The Chairman receives everything de-anonymized: original question, all 5 advisor responses, all 5 peer reviews.
+
+**Reasoning approach:** Before writing the verdict, reason silently through:
+
+1. Which points appear in ≥3 advisor responses (convergence signal)?
+2. Where do reviewers disagree about the strongest response (genuine clash)?
+3. Which blind spots emerged ONLY in peer review, not in original advisors?
+
+Identify at least 2 non-obvious findings before structuring output. Do not stream a first draft — produce a single considered verdict.
 
 Produces the verdict in this structure:
 
@@ -89,10 +97,3 @@ Display the full verdict directly to the user.
 - [ ] Peer review completed with anonymization (parallel)
 - [ ] Chairman synthesis delivered with clear verdict
 - [ ] Full transcript saved to `./plans/`
-
-## Session Rules
-
-- Exhaust one topic fully before moving to the next. No compound questions.
-- Restate decisions back to the client before finalizing.
-- Technology choices appear in deliverables **only** when the client explicitly states them.
-- Tone: Professional, direct, thorough. This is a consulting engagement.

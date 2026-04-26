@@ -15,6 +15,8 @@ The PRD should already be in the conversation. If it isn't, ask the user to past
 
 ### 2. Identify durable architectural decisions
 
+**Reasoning approach:** Mentally trace 2-3 likely implementation paths through the PRD end-to-end. A "durable" decision is one all paths share. Reason through alternatives before listing — surface hidden assumptions, then prune. **Recommended for this step:** opus-4.7 with extended thinking (high effort).
+
 Before slicing, identify high-level decisions that are unlikely to change throughout implementation:
 
 - System architecture style
@@ -26,6 +28,8 @@ Before slicing, identify high-level decisions that are unlikely to change throug
 These go in the plan header so every phase can reference them.
 
 ### 3. Draft vertical slices
+
+**Reasoning approach:** Hold the full PRD in mind while slicing. Each slice must cut through ALL integration layers — verify mentally before writing. Avoid horizontal-by-default thinking; if a phase only touches one layer, it's the wrong shape.
 
 Break the PRD into **tracer bullet** phases. Each phase is a thin vertical slice that cuts through ALL integration layers end-to-end, NOT a horizontal slice of one layer.
 
@@ -48,10 +52,3 @@ Iterate until the user approves the breakdown.
 ### 5. Write the plan file
 
 Create `./plans/` if it doesn't exist. Write the plan as a Markdown file named after the feature (e.g. `./plans/user-onboarding.md`). Use the template in [plan-template.md](./references/plan-template.md).
-
-## Session Rules
-
-- Exhaust one topic fully before moving to the next. No compound questions.
-- Restate decisions back to the client before finalizing.
-- Technology choices appear in deliverables **only** when the client explicitly states them.
-- Tone: Professional, direct, thorough. This is a consulting engagement.

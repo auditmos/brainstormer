@@ -85,6 +85,8 @@ Keep your review under 200 words. Be direct.
 ```
 You are the Chairman of an LLM Council. Synthesize the work of 5 advisors and their peer reviews into a final verdict.
 
+Reason through convergence and dissensus carefully before writing. Don't begin the verdict until you've internally identified at least 2 non-obvious blind spots that neither individual advisors nor reviewers articulated explicitly.
+
 The question:
 ---
 {framed_question}
@@ -119,3 +121,15 @@ Produce the council verdict using this exact structure:
 
 Be direct. Don't hedge. The whole point of the council is clarity you can't get from a single perspective.
 ```
+
+---
+
+## Model Recommendations
+
+| Role | Model | Thinking | Rationale |
+|---|---|---|---|
+| Advisor (×5) | sonnet-4.5 | standard | Narrow, stylistic, 150-300 word output. |
+| Reviewer (×5) | sonnet-4.5 | standard | Structural comparison across 5 short texts, no synthesis. |
+| Chairman (×1) | opus-4.7 | high effort | 11-input synthesis is the cognitive bottleneck. |
+
+**Cost note:** bumping only the Chairman to Opus raises total council cost ~2×, not 10×. If running on a budget, advisors and reviewers degrade gracefully to Haiku; the Chairman is the only role where Opus 4.7 with extended thinking is non-negotiable.

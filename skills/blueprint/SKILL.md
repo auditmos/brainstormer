@@ -15,6 +15,8 @@ This skill will be invoked when the user wants to create a PRD. You should go th
 
 A deep module (as opposed to a shallow module) is one which encapsulates a lot of functionality in a simple, testable interface which rarely changes.
 
+**Reasoning approach:** Deep modules aren't visible in a first pass. Sketch the obvious components, then ask of each: is its interface narrow relative to its body? Does it leak implementation details? Iterate silently before presenting — first-draft components tend to be shallow. **Recommended for this step:** opus-4.7 with extended thinking (medium-to-high effort).
+
 Check with the user that these components match their expectations. Check with the user which components they want validation criteria for.
 
 4. Once you have a complete understanding of the problem and solution, write the PRD using the template in [prd-template.md](./references/prd-template.md). The PRD should be submitted as a GitHub issue.
@@ -27,10 +29,3 @@ Before creating GitHub issues, verify:
 3. User has write access to the repository
 
 If any check fails, inform the user and provide the fix command.
-
-## Session Rules
-
-- Exhaust one topic fully before moving to the next. No compound questions.
-- Restate decisions back to the client before finalizing.
-- Technology choices appear in deliverables **only** when the client explicitly states them.
-- Tone: Professional, direct, thorough. This is a consulting engagement.

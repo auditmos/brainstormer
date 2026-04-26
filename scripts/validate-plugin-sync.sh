@@ -12,7 +12,7 @@ errors=()
 # Strip "## Session Rules" section and any trailing blank lines
 strip_session_rules() {
   # Remove Session Rules section, then trim trailing blank lines
-  sed '/^## Session Rules$/,$d' "$1" | awk 'NF{p=1} p' | tac | awk 'NF{p=1} p' | tac
+  sed '/^## Session Rules$/,$d' "$1" | awk 'NF{p=1} p' | tail -r | awk 'NF{p=1} p' | tail -r
 }
 
 for skill_dir in "$REPO_ROOT"/skills/*/; do

@@ -48,6 +48,8 @@ Present a one-paragraph summary: "This is a TypeScript monorepo using pnpm, Vite
 
 Score the existing CLAUDE.md across eight dimensions. Present findings one dimension at a time (exhaust each before moving on).
 
+**Reasoning approach:** Many findings are cross-dimensional — e.g., a vague instruction nested inside a domain section, or a code snippet that duplicates linter rules. Hold all 8 dimensions in mind simultaneously while scoring each one. Reason silently through the full file before writing the scorecard. **Recommended for this step:** opus-4.7 with extended thinking (high effort).
+
 **Dimensions:**
 
 1. **Identity** — Is there a clear one-sentence project description? Is it bare (unwrapped)?
@@ -101,15 +103,11 @@ Reference [claude-md-template.md](./references/claude-md-template.md) for the id
 2. Walk through the acceptance checklist
 3. Only after explicit confirmation, write the file
 
-## Session Rules
+## Skill-Specific Rules
 
-- Exhaust one topic fully before moving to the next. No compound questions.
-- Restate decisions back to the client before finalizing.
 - Present diffs section-by-section, not all at once.
 - Never delete content without explaining why.
 - If unsure whether something is linter territory, ask — don't assume.
-- Technology choices appear in deliverables **only** when the client explicitly states them.
-- Tone: Professional, direct, thorough. This is a consulting engagement.
 
 ## Acceptance Checklist
 

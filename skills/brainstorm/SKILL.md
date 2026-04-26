@@ -58,10 +58,3 @@ Before moving to the next phase:
 2. Confirm the client is ready to proceed
 3. Mention that `/lean` is available at any point to check for over-engineering
 4. Mention that `/llm-council` is available for any strategic decision where the client wants multi-perspective analysis
-
-## Session Rules
-
-- Exhaust one topic fully before moving to the next. No compound questions.
-- Restate decisions back to the client before finalizing.
-- Technology choices appear in deliverables **only** when the client explicitly states them.
-- Tone: Professional, direct, thorough. This is a consulting engagement.
