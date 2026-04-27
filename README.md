@@ -24,7 +24,7 @@ Consultants, product owners, founders, and technical leads — working with any 
 claude plugin install <repo-url>
 ```
 
-All 10 skills become available via `/` commands in any project.
+All 11 skills become available via `/` commands in any project.
 
 ### Manual Install (Claude Code)
 
@@ -64,6 +64,7 @@ cd brainstormer
 | Ship | `/ship` | Lint, type-check, commit, and push in one flow |
 | LLM Council | `/llm-council` | Multi-perspective advisory council for strategic decisions |
 | Improve CLAUDE.md | `/improve-claude-md` | Audit and optimize CLAUDE.md files with conditional importance tags |
+| Agent CLI | `/agent-cli` | Design and audit CLIs intended for AI agents — seven principles with severity rubric |
 
 ## Recommended Workflow
 

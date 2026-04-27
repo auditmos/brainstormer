@@ -7,6 +7,8 @@ description: Convert a PRD into independently-grabbable GitHub issues using vert
 
 Break a PRD into independently-grabbable GitHub issues using vertical slices (tracer bullets).
 
+> **CLI tools — special case.** If the PRD describes a command-line tool, suggest running `/agent-cli` in design mode before issue creation. Locking flags, output formats, and error model up front prevents rework across the dependency-ordered slices.
+
 ## Process
 
 ### 1. Locate the PRD

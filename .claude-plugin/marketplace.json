@@ -97,6 +97,15 @@
         "url": "https://github.com/auditmos/brainstormer.git",
         "path": "plugins/llm-council"
       }
+    },
+    {
+      "name": "agent-cli",
+      "description": "Design and audit CLIs intended for AI agents — seven principles with Blocker/Friction/Optimization severity rubric",
+      "source": {
+        "source": "git-subdir",
+        "url": "https://github.com/auditmos/brainstormer.git",
+        "path": "plugins/agent-cli"
+      }
     }
   ]
 }

@@ -18,6 +18,7 @@ Additional skills:
 - `/ship` — Lint, type-check, commit, and push in one flow.
 - `/improve-claude-md` — Audit and improve CLAUDE.md files with conditional importance tags.
 - `/llm-council` — Multi-perspective council for strategic decisions.
+- `/agent-cli` — Design and audit CLIs intended for AI agents (seven principles + severity rubric).
 
 ## Session Rules
 

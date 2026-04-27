@@ -1,0 +1,5 @@
+{
+  "name": "agent-cli",
+  "description": "Design and audit CLIs intended for AI agents — applies seven principles with a Blocker/Friction/Optimization severity rubric",
+  "version": "1.0.0"
+}

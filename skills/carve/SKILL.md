@@ -7,6 +7,8 @@ description: Turn a PRD into a multi-phase implementation plan using tracer-bull
 
 Break a PRD into a phased implementation plan using vertical slices (tracer bullets). Output is a Markdown file in `./plans/`.
 
+> **CLI tools — special case.** If the PRD describes a command-line tool, suggest running `/agent-cli` in design mode before slicing. Locking flags, output formats, and error model up front prevents rework once vertical slices start landing.
+
 ## Process
 
 ### 1. Confirm the PRD is in context
