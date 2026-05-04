@@ -15,7 +15,7 @@
 - [Ship — Lint, Commit & Push](skills/ship/SKILL.md): Lint, type-check, commit, and push in one flow
 - [Improve CLAUDE.md — Structured Optimization](skills/improve-claude-md/SKILL.md): Audit and improve CLAUDE.md files by wrapping sections in conditional importance tags, removing linter overlap, and ensuring project accuracy
 - [LLM Council — Multi-Advisor Analysis](skills/llm-council/SKILL.md): Run a question through 5 AI advisors who analyze independently, peer-review anonymously, then synthesize a verdict
-- [Agent CLI — Design & Audit](skills/agent-cli/SKILL.md): Design and audit CLIs intended for AI agents using seven principles and a Blocker/Friction/Optimization severity rubric
+- [Agent CLI — Design & Audit](skills/agent-cli/SKILL.md): Design and audit CLIs intended for AI agents using ten agent-native principles (Tier 1 table stakes + Tier 2 compounding) and a Blocker/Friction/Optimization severity rubric across six command classes (read/mutate/stream/bootstrap/async/config)
 - [Handoff — Chat-to-Handoff Distillation](skills/handoff/SKILL.md): Capture the current chat as a lossless structured handoff (.md + .txt) for Codex, Cursor, or other IDE-based agents
 
 ## Templates & References
@@ -30,10 +30,10 @@
 - [CLAUDE.md Template](skills/improve-claude-md/references/claude-md-template.md): Ideal structure for CLAUDE.md files with conditional importance tags
 - [Important-If Catalog](skills/improve-claude-md/references/important-if-catalog.md): Curated conditions for wrapping CLAUDE.md sections by domain
 - [Council Playbook](skills/llm-council/references/council-playbook.md): Advisor personas and prompt templates for the LLM Council
-- [CLI Principles](skills/agent-cli/references/cli-principles.md): Seven agent-friendly CLI principles with rationale and worked examples
-- [CLI Audit Checklist](skills/agent-cli/references/audit-checklist.md): Per-principle audit checks with severity mapping by command class
-- [CLI Framework Recipes](skills/agent-cli/references/framework-recipes.md): Idiomatic patterns for Click, argparse, Cobra, clap, Commander, yargs, oclif
-- [CLI Test Recipes](skills/agent-cli/references/test-recipes.md): Drop-in pytest and vitest snippets that turn the seven principles into CI-enforceable assertions
+- [CLI Principles](skills/agent-cli/references/cli-principles.md): Ten agent-native CLI principles (Tier 1 table stakes + Tier 2 compounding) with rationale, worked examples, and architectural backstop note for codegen-driven CLIs
+- [CLI Audit Checklist](skills/agent-cli/references/audit-checklist.md): Per-principle audit checks with severity mapping by command class (read/mutate/stream/bootstrap/async/config) and Tier 2-specific tie-breakers
+- [CLI Framework Recipes](skills/agent-cli/references/framework-recipes.md): Idiomatic patterns for Click, argparse, Cobra, clap, Commander, yargs, oclif — Tier 1 across all seven, Tier 2 (--wait, agent-context, profiles, --deliver) for Click/Cobra/Commander/oclif
+- [CLI Test Recipes](skills/agent-cli/references/test-recipes.md): Drop-in pytest and vitest snippets that turn the ten principles into CI-enforceable assertions, including agent-context schema validation, --wait synchronicity, profile precedence, and --deliver routing
 - [Handoff Output Template](skills/handoff/references/output-template.md): Section-by-section markdown structure for the handoff document
 - [Handoff Extraction Checklist](skills/handoff/references/extraction-checklist.md): Eleven categories of detail to pull out of the chat
 - [Handoff Code Status Tags](skills/handoff/references/code-status-tags.md): FINAL/SUPERSEDED/REJECTED/DRAFT semantics with truncation prohibition
