@@ -54,12 +54,31 @@ if [[ -f "$marketplace_json" ]]; then
   done
 fi
 
+# Check llms.txt lists every skill SKILL.md and every references/*.md file
+llms_txt="$REPO_ROOT/llms.txt"
+if [[ -f "$llms_txt" ]]; then
+  for skill_dir in "$REPO_ROOT"/skills/*/; do
+    skill_name=$(basename "$skill_dir")
+    skill_link="skills/$skill_name/SKILL.md"
+    if ! grep -qF "($skill_link)" "$llms_txt"; then
+      errors+=("LLMS.TXT:    $skill_link missing from llms.txt")
+    fi
+  done
+
+  while IFS= read -r -d '' ref_file; do
+    rel_path="${ref_file#"$REPO_ROOT/"}"
+    if ! grep -qF "($rel_path)" "$llms_txt"; then
+      errors+=("LLMS.TXT:    $rel_path missing from llms.txt")
+    fi
+  done < <(find "$REPO_ROOT/skills" -path '*/references/*.md' -type f -print0)
+fi
+
 if [[ ${#errors[@]} -gt 0 ]]; then
   echo "Plugin sync validation failed:"
   printf '  %s\n' "${errors[@]}"
   echo ""
-  echo "Fix: copy changed files from skills/ to plugins/ and update marketplace.json before committing."
+  echo "Fix: copy changed files from skills/ to plugins/, then update marketplace.json and llms.txt before committing."
   exit 1
 fi
 
-echo "All skills synced with plugins and marketplace."
+echo "All skills synced with plugins, marketplace, and llms.txt."

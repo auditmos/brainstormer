@@ -1,0 +1,5 @@
+{
+  "name": "handoff",
+  "description": "Capture the current chat as a structured handoff document for Codex, Cursor, or other IDE-based AI coding agents",
+  "version": "1.0.0"
+}

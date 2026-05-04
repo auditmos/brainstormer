@@ -16,6 +16,7 @@
 - [Improve CLAUDE.md — Structured Optimization](skills/improve-claude-md/SKILL.md): Audit and improve CLAUDE.md files by wrapping sections in conditional importance tags, removing linter overlap, and ensuring project accuracy
 - [LLM Council — Multi-Advisor Analysis](skills/llm-council/SKILL.md): Run a question through 5 AI advisors who analyze independently, peer-review anonymously, then synthesize a verdict
 - [Agent CLI — Design & Audit](skills/agent-cli/SKILL.md): Design and audit CLIs intended for AI agents using seven principles and a Blocker/Friction/Optimization severity rubric
+- [Handoff — Chat-to-Handoff Distillation](skills/handoff/SKILL.md): Capture the current chat as a lossless structured handoff (.md + .txt) for Codex, Cursor, or other IDE-based agents
 
 ## Templates & References
 
@@ -23,6 +24,7 @@
 - [Plan Template](skills/carve/references/plan-template.md): Structure for phased implementation plans
 - [Issue Template](skills/dispatch/references/issue-template.md): Structure for GitHub dev issues
 - [Vertical Slice Rules](skills/carve/references/vertical-slice-rules.md): Rules for tracer-bullet slicing
+- [Vertical Slice Rules (Dispatch copy)](skills/dispatch/references/vertical-slice-rules.md): Identical copy of carve's vertical-slice-rules.md, used by /dispatch
 - [Question Format](skills/ask/references/question-format.md): Interview question numbering and formatting
 - [Mocking Patterns](skills/tdd/references/mocking.md): DI, SDK wrappers, and good vs bad mock examples
 - [CLAUDE.md Template](skills/improve-claude-md/references/claude-md-template.md): Ideal structure for CLAUDE.md files with conditional importance tags
@@ -32,6 +34,10 @@
 - [CLI Audit Checklist](skills/agent-cli/references/audit-checklist.md): Per-principle audit checks with severity mapping by command class
 - [CLI Framework Recipes](skills/agent-cli/references/framework-recipes.md): Idiomatic patterns for Click, argparse, Cobra, clap, Commander, yargs, oclif
 - [CLI Test Recipes](skills/agent-cli/references/test-recipes.md): Drop-in pytest and vitest snippets that turn the seven principles into CI-enforceable assertions
+- [Handoff Output Template](skills/handoff/references/output-template.md): Section-by-section markdown structure for the handoff document
+- [Handoff Extraction Checklist](skills/handoff/references/extraction-checklist.md): Eleven categories of detail to pull out of the chat
+- [Handoff Code Status Tags](skills/handoff/references/code-status-tags.md): FINAL/SUPERSEDED/REJECTED/DRAFT semantics with truncation prohibition
+- [Handoff TXT Format](skills/handoff/references/txt-format.md): Markdown-to-plaintext substitution rules for the .txt variant
 
 ## Workflow
 

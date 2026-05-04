@@ -19,6 +19,7 @@ Additional skills:
 - `/improve-claude-md` — Audit and improve CLAUDE.md files with conditional importance tags.
 - `/llm-council` — Multi-perspective council for strategic decisions.
 - `/agent-cli` — Design and audit CLIs intended for AI agents (seven principles + severity rubric).
+- `/handoff` — Capture the current chat as a structured handoff doc (.md + .txt) for Codex, Cursor, or another IDE agent.
 
 ## Session Rules
 
