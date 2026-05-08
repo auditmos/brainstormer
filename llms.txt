@@ -17,6 +17,7 @@
 - [LLM Council — Multi-Advisor Analysis](skills/llm-council/SKILL.md): Run a question through 5 AI advisors who analyze independently, peer-review anonymously, then synthesize a verdict
 - [Agent CLI — Design & Audit](skills/agent-cli/SKILL.md): Design and audit CLIs intended for AI agents using ten agent-native principles (Tier 1 table stakes + Tier 2 compounding) and a Blocker/Friction/Optimization severity rubric across six command classes (read/mutate/stream/bootstrap/async/config)
 - [Handoff — Chat-to-Handoff Distillation](skills/handoff/SKILL.md): Capture the current chat as a lossless structured handoff (.md + .txt) for Codex, Cursor, or other IDE-based agents
+- [React Audit — Phase 1 Tracer Bullet](skills/react-audit/SKILL.md): Audit a React/TSX repository for React anti-patterns, file one GitHub issue per finding via gh CLI; tracer-bullet ships a single rule (effects/computing-derived-state)
 
 ## Templates & References
 
@@ -38,6 +39,11 @@
 - [Handoff Extraction Checklist](skills/handoff/references/extraction-checklist.md): Eleven categories of detail to pull out of the chat
 - [Handoff Code Status Tags](skills/handoff/references/code-status-tags.md): FINAL/SUPERSEDED/REJECTED/DRAFT semantics with truncation prohibition
 - [Handoff TXT Format](skills/handoff/references/txt-format.md): Markdown-to-plaintext substitution rules for the .txt variant
+- [Rule Card — effects/computing-derived-state](skills/react-shared/references/cards/effects/computing-derived-state.md): Anti-pattern card for useEffect that derives state from props or other state — bad/good snippets, llm-judge detection criteria, react.dev citation
+- [React Audit Fixtures README](skills/react-audit/references/fixtures/README.md): Layout and manual verification procedure for the seeded/clean fixture pair used to verify the Phase 1 tracer-bullet path
+- [React Audit Verification Log](skills/react-audit/references/fixtures/verification-log.md): Frozen evidence walking the four-module path on both fixtures — Rule Card Library, Code Scanner, Issue Manager, gh-only constraint
+- [React Audit Seeded Fixture](skills/react-audit/references/fixtures/seeded/UserCard.tsx): TSX file with one occurrence of effects/computing-derived-state (useEffect deriving fullName)
+- [React Audit Clean Fixture](skills/react-audit/references/fixtures/clean/UserCard.tsx): TSX file with no anti-patterns (fullName computed during render)
 
 ## Workflow
 

@@ -1,0 +1,5 @@
+{
+  "name": "react-audit",
+  "description": "Audit a React/TSX repository for React anti-patterns by loading rule cards from the shared brainstormer card library, scanning source files via the strategy each card declares, and filing one GitHub issue per finding via the gh CLI. Phase 1 tracer-bullet ships a single rule (effects/computing-derived-state); manual invocation only.",
+  "version": "0.1.0"
+}
