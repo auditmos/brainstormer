@@ -39,10 +39,32 @@
 - [Handoff Extraction Checklist](skills/handoff/references/extraction-checklist.md): Eleven categories of detail to pull out of the chat
 - [Handoff Code Status Tags](skills/handoff/references/code-status-tags.md): FINAL/SUPERSEDED/REJECTED/DRAFT semantics with truncation prohibition
 - [Handoff TXT Format](skills/handoff/references/txt-format.md): Markdown-to-plaintext substitution rules for the .txt variant
+- [Rule Card Index](skills/react-shared/references/cards/index.md): Pre-load lookup for the React audit skill suite — lists every shipping card by id and category
 - [Rule Card — effects/computing-derived-state](skills/react-shared/references/cards/effects/computing-derived-state.md): Anti-pattern card for useEffect that derives state from props or other state — bad/good snippets, llm-judge detection criteria, react.dev citation
+- [Rule Card — effects/transforming-data-for-render](skills/react-shared/references/cards/effects/transforming-data-for-render.md): useEffect filters/sorts/maps a list into state instead of computing during render
+- [Rule Card — effects/caching-expensive-computation](skills/react-shared/references/cards/effects/caching-expensive-computation.md): useEffect + useState used as a cache for an expensive computation instead of useMemo
+- [Rule Card — effects/resetting-all-state-on-prop-change](skills/react-shared/references/cards/effects/resetting-all-state-on-prop-change.md): useEffect resets every piece of state when a key-like prop changes instead of remounting via key
+- [Rule Card — effects/adjusting-state-on-prop-change](skills/react-shared/references/cards/effects/adjusting-state-on-prop-change.md): useEffect adjusts one piece of state on prop change instead of adjusting during render with a previous-prop comparison
+- [Rule Card — effects/sharing-logic-between-handlers](skills/react-shared/references/cards/effects/sharing-logic-between-handlers.md): logic shared into useEffect that fires for non-user reasons — belongs in a helper called from each handler
+- [Rule Card — effects/sending-post-request](skills/react-shared/references/cards/effects/sending-post-request.md): POST fired from useEffect in response to user action instead of from the event handler
+- [Rule Card — effects/fetching-data](skills/react-shared/references/cards/effects/fetching-data.md): useEffect + fetch for data loading with no race-condition guard and no framework data primitive
+- [Rule Card — effects/chains-of-computations](skills/react-shared/references/cards/effects/chains-of-computations.md): cascade of useEffects each watching state and triggering the next, causing N+1 rerenders
+- [Rule Card — effects/initializing-application](skills/react-shared/references/cards/effects/initializing-application.md): app-wide initialization placed in a component useEffect instead of module scope, runs twice in Strict Mode
+- [Rule Card — effects/notifying-parent-state-changes](skills/react-shared/references/cards/effects/notifying-parent-state-changes.md): useEffect calls onChange when internal state changes instead of calling it from the handler that set the state
 - [React Audit Fixtures README](skills/react-audit/references/fixtures/README.md): Layout and manual verification procedure for the seeded/clean fixture pair used to verify the Phase 1 tracer-bullet path
 - [React Audit Verification Log](skills/react-audit/references/fixtures/verification-log.md): Frozen evidence walking the four-module path on both fixtures — Rule Card Library, Code Scanner, Issue Manager, gh-only constraint
+- [React Audit Verification Log (P2a)](skills/react-audit/references/fixtures/verification-log-p2a.md): Phase 2a evidence — walks all 11 effects cards × 11 seeded fixtures, severity table, cross-card LLM-judge cache restatement
 - [React Audit Seeded Fixture](skills/react-audit/references/fixtures/seeded/UserCard.tsx): TSX file with one occurrence of effects/computing-derived-state (useEffect deriving fullName)
+- [React Audit Seeded Fixture — TodoList](skills/react-audit/references/fixtures/seeded/TodoList.tsx): one occurrence of effects/transforming-data-for-render
+- [React Audit Seeded Fixture — ReportTable](skills/react-audit/references/fixtures/seeded/ReportTable.tsx): one occurrence of effects/caching-expensive-computation
+- [React Audit Seeded Fixture — ProfilePage](skills/react-audit/references/fixtures/seeded/ProfilePage.tsx): one occurrence of effects/resetting-all-state-on-prop-change
+- [React Audit Seeded Fixture — SelectableList](skills/react-audit/references/fixtures/seeded/SelectableList.tsx): one occurrence of effects/adjusting-state-on-prop-change
+- [React Audit Seeded Fixture — ProductPage](skills/react-audit/references/fixtures/seeded/ProductPage.tsx): one occurrence of effects/sharing-logic-between-handlers
+- [React Audit Seeded Fixture — RegistrationForm](skills/react-audit/references/fixtures/seeded/RegistrationForm.tsx): one occurrence of effects/sending-post-request
+- [React Audit Seeded Fixture — FetchUserList](skills/react-audit/references/fixtures/seeded/FetchUserList.tsx): one occurrence of effects/fetching-data
+- [React Audit Seeded Fixture — Game](skills/react-audit/references/fixtures/seeded/Game.tsx): one occurrence of effects/chains-of-computations
+- [React Audit Seeded Fixture — App](skills/react-audit/references/fixtures/seeded/App.tsx): one occurrence of effects/initializing-application (hot-path → Blocker)
+- [React Audit Seeded Fixture — Toggle](skills/react-audit/references/fixtures/seeded/Toggle.tsx): one occurrence of effects/notifying-parent-state-changes
 - [React Audit Clean Fixture](skills/react-audit/references/fixtures/clean/UserCard.tsx): TSX file with no anti-patterns (fullName computed during render)
 
 ## Workflow

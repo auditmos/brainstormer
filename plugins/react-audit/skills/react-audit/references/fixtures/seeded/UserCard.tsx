@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-
+// rule_id: effects/computing-derived-state
 interface UserCardProps {
   initialFirstName: string;
   initialLastName: string;

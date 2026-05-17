@@ -64,6 +64,18 @@ if [[ -f "$SKILL_FILE" ]]; then
       errors+=("SKILL.md: missing contract symbol '$required_symbol'")
     fi
   done
+
+  # Phase 2a — the Workflow section must invoke listCards(); the skill
+  # dispatches across every shipping card in the effects category, not just
+  # the Phase 1 tracer-bullet card.
+  workflow_section=$(awk '
+    /^## Workflow$/ { in_section = 1; next }
+    in_section && /^## / { exit }
+    in_section { print }
+  ' "$SKILL_FILE")
+  if ! grep -qF 'listCards(' <<< "$workflow_section"; then
+    errors+=("SKILL.md: Workflow section does not invoke listCards( — required for Phase 2a multi-rule dispatch")
+  fi
 fi
 
 # 3. Fixtures + verification log (slice 4) ----------------------------------
@@ -79,7 +91,44 @@ do
   fi
 done
 
-# 4. gh-only constraint guard (slice 7) -------------------------------------
+# 4. Phase 2a — fixture↔card coverage + multi-rule verification log ---------
+#    Each shipping card under cards/effects/ must have a seeded fixture that
+#    carries the magic header comment `// rule_id: effects/<slug>`. The P2a
+#    verification log must reference every shipping card by id.
+CARDS_DIR_EFFECTS="$REPO_ROOT/skills/react-shared/references/cards/effects"
+SEEDED_DIR="$FIXTURES_DIR/seeded"
+P2A_LOG="$FIXTURES_DIR/verification-log-p2a.md"
+if [[ -d "$CARDS_DIR_EFFECTS" ]]; then
+  while IFS= read -r -d '' card; do
+    base="$(basename "$card" .md)"
+    [[ "$base" == "index" ]] && continue
+    rule_id="effects/$base"
+    if [[ ! -d "$SEEDED_DIR" ]]; then
+      errors+=("missing seeded fixtures directory: ${SEEDED_DIR#"$REPO_ROOT/"}")
+      break
+    fi
+    if ! grep -rqE "^// rule_id: ${rule_id}\$" "$SEEDED_DIR"; then
+      errors+=("no seeded fixture carries '// rule_id: $rule_id' header under ${SEEDED_DIR#"$REPO_ROOT/"}/")
+    fi
+    if [[ -f "$P2A_LOG" ]]; then
+      if ! grep -qF "$rule_id" "$P2A_LOG"; then
+        errors+=("verification-log-p2a.md: rule '$rule_id' not referenced")
+      fi
+    fi
+  done < <(find "$CARDS_DIR_EFFECTS" -maxdepth 1 -type f -name '*.md' -print0)
+
+  if [[ ! -f "$P2A_LOG" ]]; then
+    errors+=("missing P2a verification log: ${P2A_LOG#"$REPO_ROOT/"}")
+  else
+    # Cache contract must be restated in the P2a log so the (file_hash, rule_id)
+    # guarantee is documented for the multi-rule run.
+    if ! grep -qE 'file_hash.*rule_id|rule_id.*file_hash' "$P2A_LOG"; then
+      errors+=("verification-log-p2a.md: missing (file_hash, rule_id) cache contract restatement")
+    fi
+  fi
+fi
+
+# 5. gh-only constraint guard (slice 7) -------------------------------------
 #    Only flag forbidden patterns inside fenced code blocks. Prose mentions
 #    (e.g. "no `curl`, no `WebFetch`") are descriptive and stay allowed.
 if [[ -d "$REPO_ROOT/skills/react-audit" ]]; then

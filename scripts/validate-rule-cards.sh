@@ -46,6 +46,11 @@ extract_body() {
 }
 
 while IFS= read -r -d '' card; do
+  # The index.md lives in the same directory but is not a rule card; skip it
+  # in the per-card schema loop and validate it separately below.
+  if [[ "$(basename "$card")" == "index.md" ]]; then
+    continue
+  fi
   card_count=$((card_count + 1))
   rel="${card#"$REPO_ROOT/"}"
 
@@ -95,10 +100,35 @@ if [[ "$card_count" -eq 0 ]]; then
   errors+=("no cards found under skills/react-shared/references/cards/")
 fi
 
+# Index file — bidirectional consistency between cards/ tree and index.md.
+INDEX_FILE="$CARDS_DIR/index.md"
+INDEX_REL="${INDEX_FILE#"$REPO_ROOT/"}"
+if [[ ! -f "$INDEX_FILE" ]]; then
+  errors+=("missing index file: $INDEX_REL")
+else
+  # Every card file under cards/ must be referenced in index.md by its
+  # category-prefixed relative path (e.g. "(effects/foo.md)").
+  while IFS= read -r -d '' card; do
+    [[ "$(basename "$card")" == "index.md" ]] && continue
+    rel_to_cards="${card#"$CARDS_DIR/"}"
+    if ! grep -qF "($rel_to_cards)" "$INDEX_FILE"; then
+      errors+=("$INDEX_REL: card '$rel_to_cards' not listed")
+    fi
+  done < <(find "$CARDS_DIR" -type f -name '*.md' -print0)
+
+  # Every link target in index.md must point to a real card file.
+  while IFS= read -r target; do
+    [[ -z "$target" ]] && continue
+    if [[ ! -f "$CARDS_DIR/$target" ]]; then
+      errors+=("$INDEX_REL: link target '$target' does not exist")
+    fi
+  done < <(grep -oE '\(([a-z][a-z0-9-]*/[a-z0-9-]+\.md)\)' "$INDEX_FILE" | tr -d '()')
+fi
+
 if [[ ${#errors[@]} -gt 0 ]]; then
   echo "Rule card validation failed:"
   printf '  %s\n' "${errors[@]}"
   exit 1
 fi
 
-echo "All $card_count rule cards valid."
+echo "All $card_count rule cards valid (index OK)."

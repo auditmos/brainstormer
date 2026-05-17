@@ -1,14 +1,16 @@
 ---
 name: react-audit
-description: Audit a React/TSX repository for React anti-patterns by loading rule cards from the brainstormer card library, scanning source files via the strategy each card declares, and filing one GitHub issue per finding via the `gh` CLI. Tracer-bullet scope ships a single rule (`effects/computing-derived-state`); manual invocation only — no hooks, no scheduled execution. Triggers on `/react-audit`, "audit this repo for react anti-patterns", "scan for useEffect anti-patterns", "run a react audit", or similar phrasing requesting a React/UI quality scan with GitHub-issue output. Skip for design questions, scaffolding requests, or audits of non-React frameworks (Vue, Svelte, Solid).
+description: Audit a React/TSX repository for React anti-patterns by loading rule cards from the brainstormer card library, scanning source files via the strategy each card declares, and filing one GitHub issue per finding via the `gh` CLI. Phase 2a ships the full 11-card effects library from react.dev/learn/you-might-not-need-an-effect; manual invocation only — no hooks, no scheduled execution. Triggers on `/react-audit`, "audit this repo for react anti-patterns", "scan for useEffect anti-patterns", "run a react audit", or similar phrasing requesting a React/UI quality scan with GitHub-issue output. Skip for design questions, scaffolding requests, or audits of non-React frameworks (Vue, Svelte, Solid).
 ---
 
-# React Audit — Tracer-bullet skill (Phase 1)
+# React Audit — Phase 2a (multi-rule effects dispatch)
 
-Manual-invocation skill that reads one rule card from the shared card library,
-scans the current repository for occurrences of that anti-pattern, and files a
-GitHub issue for each finding. This is the **Phase 1 tracer bullet** — single
-rule, no smart scan, no grouping, no dedup. Subsequent phases broaden scope.
+Manual-invocation skill that loads every shipping card under the `effects/`
+category, scans the current repository for occurrences of each anti-pattern,
+and files a GitHub issue per finding. Phase 2a covers the full 11-card
+library from
+[react.dev/learn/you-might-not-need-an-effect](https://react.dev/learn/you-might-not-need-an-effect)
+— no smart scan, no grouping, no dedup; those arrive in Phases 2b / 2c / 3.
 
 ## Usage
 
@@ -16,39 +18,45 @@ rule, no smart scan, no grouping, no dedup. Subsequent phases broaden scope.
 /react-audit
 ```
 
-The skill takes no arguments at this phase. It always loads the single card
-`effects/computing-derived-state`, scans every tracked `*.tsx`/`*.jsx` file in
-the current repo, and creates one issue per finding.
+The skill takes no arguments. It loads every card in the `effects/` category
+via `listCards("effects")`, scans every tracked `*.tsx`/`*.jsx` file in the
+current repo, and creates one issue per finding (one issue per occurrence,
+per rule — grouping arrives in Phase 2c).
 
-## Scope Boundaries (Phase 1)
+## Scope Boundaries (Phase 2a)
 
-- **One rule only** — `effects/computing-derived-state`. The card library
-  contains only this card at Phase 1.
+- **All shipping `effects/` cards** — Phase 2a ships eleven cards. The
+  scanner dispatches across each card listed in
+  `skills/react-shared/references/cards/index.md` under the `effects/`
+  category. Adding a new card to the index automatically extends the scan;
+  no skill-side change required.
 - **Create-only** — no dedup, no in-place body update, no regression
-  backlinking. Re-running creates duplicate issues.
-- **No grouping** — one issue per occurrence (one occurrence is the expected
-  fixture state).
-- **No smart-scan threshold** — every tracked TSX/JSX file is scanned without
-  prompting.
+  backlinking. Re-running creates duplicate issues. Dedup arrives in Phase 3.
+- **No grouping** — one issue per occurrence per rule. Grouping by
+  `(skill, rule_id)` arrives in Phase 2c.
+- **No smart-scan threshold** — every tracked TSX/JSX file is scanned
+  without prompting. Threshold prompt arrives in Phase 2b.
 - **`gh` CLI only** — no `curl`, no `WebFetch`, no Octokit. All GitHub
   interaction goes through the `gh` binary already configured in the user's
   shell.
 
-These constraints are deliberate: the phase exists to prove the four-module
-path works end-to-end before broadening surface area.
-
 ## Workflow
 
-1. Resolve the card: `card = loadCard("effects/computing-derived-state")`.
+1. Resolve the rule set: `cards = listCards("effects")`. The Rule Card
+   Library reads `references/cards/index.md` and returns every card whose
+   category is `effects`. Phase 2a returns eleven cards.
 2. Enumerate scan targets: `git ls-files '*.tsx' '*.jsx'` from the repo root.
    Exclude none at this phase (smart-scan arrives in Phase 2b).
-3. Produce findings: `findings = scan(files, [card])`.
+3. Produce findings: `findings = scan(files, cards)`. The scanner dispatches
+   each card by its declared `detect` strategy (Phase 2a — all eleven cards
+   use `llm-judge`).
 4. For each finding, file an issue:
-   `createIssue(repo=<cwd>, label="react-audit:effects/computing-derived-state", finding)`.
+   `createIssue(repo=<cwd>, label="react-audit:" + finding.rule_id, finding)`.
+   The label is derived per-finding from the matched rule, not hardcoded.
 5. Print every created issue URL to stdout for the user.
 
 If `findings` is empty, exit with a single-line summary `0 findings` and
-create no issues. This is the AC #6 path.
+create no issues.
 
 ## Rule Card Library
 
@@ -169,15 +177,18 @@ createIssue(repo: string, label: string, finding: Finding) → URL
   surface the stderr verbatim — do not retry (avoids creating a duplicate
   on transient failure).
 
-## Acceptance Checklist
+## Acceptance Checklist (Phase 2a)
 
-- [ ] `loadCard("effects/computing-derived-state")` returns a `Card` with all
-      four mandatory fields populated and a non-empty body
-- [ ] `scan(seeded_fixture_files, [card])` produces exactly one Finding for
-      the seeded fixture
-- [ ] `scan(clean_fixture_files, [card])` produces zero Findings
-- [ ] `createIssue` invocation emits exactly one `gh issue create` shell call
-      per Finding, with the correct `--label` and a body that contains the
-      full card content
+- [ ] `listCards("effects")` returns every shipping `effects/` card listed
+      in `references/cards/index.md` (eleven at Phase 2a)
+- [ ] `scan(seeded_p2a_fixture_files, cards)` produces exactly eleven
+      Findings — one per shipping card, anchored at the seeded fixture's
+      `useEffect` block
+- [ ] `scan(clean_fixture_files, cards)` produces zero Findings
+- [ ] Each `createIssue` invocation labels with
+      `react-audit:" + finding.rule_id` and embeds the matched card's body
+      verbatim in the issue body
+- [ ] LLM-judge calls are cached per `(file_hash, rule_id)` within a single
+      run so a re-prompt for the same file × rule reuses the prior verdict
 - [ ] No call to `curl`, `WebFetch`, `@octokit`, or `api.github.com` is made
       anywhere in the skill's execution path
