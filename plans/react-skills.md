@@ -74,7 +74,7 @@ The full set of 11 useEffect anti-pattern cards from [react.dev/learn/you-might-
 
 ## Phase 2b: Smart scan with interactive threshold prompt
 
-**Status**: ✅ shipped — issue #4 — commit pending
+**Status**: ✅ shipped — issue #4 — commit 25601c5
 
 **User stories**: 2
 
