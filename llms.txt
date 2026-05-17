@@ -17,7 +17,7 @@
 - [LLM Council — Multi-Advisor Analysis](skills/llm-council/SKILL.md): Run a question through 5 AI advisors who analyze independently, peer-review anonymously, then synthesize a verdict
 - [Agent CLI — Design & Audit](skills/agent-cli/SKILL.md): Design and audit CLIs intended for AI agents using ten agent-native principles (Tier 1 table stakes + Tier 2 compounding) and a Blocker/Friction/Optimization severity rubric across six command classes (read/mutate/stream/bootstrap/async/config)
 - [Handoff — Chat-to-Handoff Distillation](skills/handoff/SKILL.md): Capture the current chat as a lossless structured handoff (.md + .txt) for Codex, Cursor, or other IDE-based agents
-- [React Audit — Phase 1 Tracer Bullet](skills/react-audit/SKILL.md): Audit a React/TSX repository for React anti-patterns, file one GitHub issue per finding via gh CLI; tracer-bullet ships a single rule (effects/computing-derived-state)
+- [React Audit — Phase 2b Smart Scan](skills/react-audit/SKILL.md): Audit a React/TSX repository for React anti-patterns, file one GitHub issue per finding via gh CLI; Phase 2b adds the Smart Scan front step (enumerateScanTargets, canonical exclusion list, interactive threshold prompt at SMART_SCAN_THRESHOLD=50) on top of Phase 2a's 11-card effects dispatch
 
 ## Templates & References
 
@@ -54,6 +54,8 @@
 - [React Audit Fixtures README](skills/react-audit/references/fixtures/README.md): Layout and manual verification procedure for the seeded/clean fixture pair used to verify the Phase 1 tracer-bullet path
 - [React Audit Verification Log](skills/react-audit/references/fixtures/verification-log.md): Frozen evidence walking the four-module path on both fixtures — Rule Card Library, Code Scanner, Issue Manager, gh-only constraint
 - [React Audit Verification Log (P2a)](skills/react-audit/references/fixtures/verification-log-p2a.md): Phase 2a evidence — walks all 11 effects cards × 11 seeded fixtures, severity table, cross-card LLM-judge cache restatement
+- [React Audit Verification Log (P2b)](skills/react-audit/references/fixtures/verification-log-p2b.md): Phase 2b evidence — walks the Smart Scan front step: below-threshold no-prompt path, above-threshold directory-group prompt with accept/reject/subset, exclusion guarantee, threshold-doc check
+- [React Audit Above-Threshold Fixture (bulk)](skills/react-audit/references/fixtures/above-threshold/_bulk-fixture): 67-file scaffold under `above-threshold/` exercising Phase 2b's threshold prompt — 60 scanned stubs across 4 directories + 7 excluded samples (one per canonical exclusion pattern). Presence-only stubs not individually indexed
 - [React Audit Seeded Fixture](skills/react-audit/references/fixtures/seeded/UserCard.tsx): TSX file with one occurrence of effects/computing-derived-state (useEffect deriving fullName)
 - [React Audit Seeded Fixture — TodoList](skills/react-audit/references/fixtures/seeded/TodoList.tsx): one occurrence of effects/transforming-data-for-render
 - [React Audit Seeded Fixture — ReportTable](skills/react-audit/references/fixtures/seeded/ReportTable.tsx): one occurrence of effects/caching-expensive-computation

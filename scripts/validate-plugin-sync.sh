@@ -118,8 +118,32 @@ if [[ -f "$llms_txt" ]]; then
     fi
   done
 
+  # Bulk-fixture opt-out: a directory containing a `_bulk-fixture` marker
+  # file is treated as a presence-only fixture mass (e.g., 60 stub TSX
+  # files exercising a threshold prompt). Per-file llms.txt indexing
+  # would inflate the index 60-fold without adding navigational value;
+  # instead the marker file itself is indexed and the validator skips the
+  # subtree.
+  bulk_roots=()
+  while IFS= read -r -d '' marker; do
+    bulk_roots+=("$(dirname "$marker")/")
+  done < <(find "$REPO_ROOT/skills" -path '*/references/*' -type f -name '_bulk-fixture' -print0)
+
+  is_under_bulk() {
+    local file="$1"
+    for root in "${bulk_roots[@]}"; do
+      if [[ "$file" == "$root"* && "$file" != "${root}_bulk-fixture" ]]; then
+        return 0
+      fi
+    done
+    return 1
+  }
+
   while IFS= read -r -d '' ref_file; do
     rel_path="${ref_file#"$REPO_ROOT/"}"
+    if is_under_bulk "$ref_file"; then
+      continue
+    fi
     if ! grep -qF "($rel_path)" "$llms_txt"; then
       errors+=("LLMS.TXT:    $rel_path missing from llms.txt")
     fi

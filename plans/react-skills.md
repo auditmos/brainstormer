@@ -22,6 +22,8 @@ Durable decisions that apply across all phases:
 
 ## Phase 1: Tracer bullet — `/react-audit` end-to-end with one rule
 
+**Status**: ✅ shipped — issue #2 — commit 7bad0a6
+
 **User stories**: 1, 8, 11, 13, 16, 19, 20, 31, 33, 34, 35
 
 ### What to build
@@ -37,17 +39,19 @@ This phase establishes the end-to-end path through Rule Card Library, Code Scann
 
 ### Acceptance criteria
 
-- [ ] `skills/react-audit/SKILL.md` exists with manual-trigger metadata
-- [ ] `skills/react-shared/references/cards/effects/computing-derived-state.md` exists with valid frontmatter and self-contained body
-- [ ] Rule Card Library loads the card and exposes it via a documented interface
-- [ ] Code Scanner dispatches the card's `detect` strategy and produces a Finding for the seeded fixture
-- [ ] Issue Manager creates a GitHub issue via `gh` with the correct label, title, and embedded body
-- [ ] Running the skill on a clean fixture (no anti-patterns) produces zero issues
-- [ ] All `gh` calls are observable in the skill's log; no other GitHub interaction mechanism is used
+- [x] `skills/react-audit/SKILL.md` exists with manual-trigger metadata
+- [x] `skills/react-shared/references/cards/effects/computing-derived-state.md` exists with valid frontmatter and self-contained body
+- [x] Rule Card Library loads the card and exposes it via a documented interface
+- [x] Code Scanner dispatches the card's `detect` strategy and produces a Finding for the seeded fixture
+- [x] Issue Manager creates a GitHub issue via `gh` with the correct label, title, and embedded body
+- [x] Running the skill on a clean fixture (no anti-patterns) produces zero issues
+- [x] All `gh` calls are observable in the skill's log; no other GitHub interaction mechanism is used
 
 ---
 
 ## Phase 2a: Effects card library — 11 cards from react.dev
+
+**Status**: ✅ shipped — issue #3 — commit ffafedd
 
 **User stories**: 29, 31, 32
 
@@ -59,16 +63,18 @@ The full set of 11 useEffect anti-pattern cards from [react.dev/learn/you-might-
 
 ### Acceptance criteria
 
-- [ ] All 11 effects cards exist with valid frontmatter and self-contained bodies, each citing the canonical react.dev URL with anchor
-- [ ] Card index file lists every shipping card by id and category
-- [ ] Schema-validation script confirms 100% of cards parse and contain mandatory fields
-- [ ] `/react-audit` on a fixture seeded with one occurrence of each rule produces 11 GitHub issues
-- [ ] Detect strategy correctly dispatches per card (regex / ast / llm-judge)
-- [ ] LLM-judge calls are cached per `(file_hash, rule_id)` within a single run
+- [x] All 11 effects cards exist with valid frontmatter and self-contained bodies, each citing the canonical react.dev URL with anchor
+- [x] Card index file lists every shipping card by id and category
+- [x] Schema-validation script confirms 100% of cards parse and contain mandatory fields
+- [x] `/react-audit` on a fixture seeded with one occurrence of each rule produces 11 GitHub issues
+- [x] Detect strategy correctly dispatches per card (regex / ast / llm-judge)
+- [x] LLM-judge calls are cached per `(file_hash, rule_id)` within a single run
 
 ---
 
 ## Phase 2b: Smart scan with interactive threshold prompt
+
+**Status**: ✅ shipped — issue #4 — commit pending
 
 **User stories**: 2
 
@@ -78,11 +84,12 @@ The full set of 11 useEffect anti-pattern cards from [react.dev/learn/you-might-
 
 ### Acceptance criteria
 
-- [ ] On a fixture with <50 matching files, no prompt is shown
-- [ ] On a fixture with ≥50 matching files, prompt lists directory groups with file counts
-- [ ] User can accept all, reject all, or select a subset of groups
-- [ ] Selected scope is logged before the scan begins
-- [ ] Excluded directories are never read regardless of threshold
+- [x] On a fixture with <50 matching files, no prompt is shown
+- [x] On a fixture with ≥50 matching files, prompt lists directory groups with file counts
+- [x] User can accept all, reject all, or select a subset of groups
+- [x] Selected scope is logged before the scan begins
+- [x] Excluded directories are never read regardless of threshold
+- [x] Threshold value is documented in the skill so it can be adjusted without changing skill logic
 
 ---
 

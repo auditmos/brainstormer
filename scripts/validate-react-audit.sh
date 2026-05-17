@@ -47,7 +47,8 @@ if [[ -f "$SKILL_FILE" ]]; then
   for required_heading in \
     "Rule Card Library" \
     "Code Scanner" \
-    "Issue Manager"
+    "Issue Manager" \
+    "Smart Scan"
   do
     if ! grep -qF "## $required_heading" "$SKILL_FILE"; then
       errors+=("SKILL.md: missing section '## $required_heading'")
@@ -58,7 +59,8 @@ if [[ -f "$SKILL_FILE" ]]; then
   for required_symbol in \
     "loadCard(" \
     "scan(" \
-    "createIssue("
+    "createIssue(" \
+    "enumerateScanTargets("
   do
     if ! grep -qF "$required_symbol" "$SKILL_FILE"; then
       errors+=("SKILL.md: missing contract symbol '$required_symbol'")
@@ -76,6 +78,42 @@ if [[ -f "$SKILL_FILE" ]]; then
   if ! grep -qF 'listCards(' <<< "$workflow_section"; then
     errors+=("SKILL.md: Workflow section does not invoke listCards( — required for Phase 2a multi-rule dispatch")
   fi
+
+  # Phase 2b — Workflow must invoke enumerateScanTargets() before scan(),
+  # not after. The exclusion list and threshold check live in Smart Scan
+  # and run unconditionally up-front; reversing the order would let the
+  # scanner read excluded files.
+  if ! grep -qF 'enumerateScanTargets(' <<< "$workflow_section"; then
+    errors+=("SKILL.md: Workflow section does not invoke enumerateScanTargets( — required for Phase 2b smart-scan dispatch")
+  else
+    enum_line=$(grep -nF 'enumerateScanTargets(' <<< "$workflow_section" | head -1 | cut -d: -f1)
+    scan_line=$(grep -nF 'scan(files' <<< "$workflow_section" | head -1 | cut -d: -f1)
+    if [[ -n "$enum_line" && -n "$scan_line" && "$enum_line" -ge "$scan_line" ]]; then
+      errors+=("SKILL.md: Workflow lists scan(files, ...) before enumerateScanTargets( — order must be enumerate → scan")
+    fi
+  fi
+
+  # Phase 2b — the threshold value must be declared as a named constant in
+  # SKILL.md so it can be adjusted without changing skill logic (AC #6).
+  if ! grep -qE '^SMART_SCAN_THRESHOLD[[:space:]]*=[[:space:]]*50$' "$SKILL_FILE"; then
+    errors+=("SKILL.md: missing 'SMART_SCAN_THRESHOLD = 50' literal declaration — AC #6 requires the threshold to be a named, adjustable constant")
+  fi
+
+  # Phase 2b — the canonical exclusion list must appear in SKILL.md so
+  # excluded directories are documented and reviewable (AC #5).
+  for excluded in \
+    "node_modules/" \
+    "dist/" \
+    "build/" \
+    ".next/" \
+    "coverage/" \
+    "**/*.test.*" \
+    "**/*.stories.*"
+  do
+    if ! grep -qF "$excluded" "$SKILL_FILE"; then
+      errors+=("SKILL.md: exclusion list missing entry '$excluded' — AC #5 requires the canonical exclusion list to be documented")
+    fi
+  done
 fi
 
 # 3. Fixtures + verification log (slice 4) ----------------------------------
@@ -126,6 +164,83 @@ if [[ -d "$CARDS_DIR_EFFECTS" ]]; then
       errors+=("verification-log-p2a.md: missing (file_hash, rule_id) cache contract restatement")
     fi
   fi
+fi
+
+# 4b. Phase 2b — smart-scan verification artifacts -------------------------
+P2B_LOG="$FIXTURES_DIR/verification-log-p2b.md"
+ABOVE_DIR="$FIXTURES_DIR/above-threshold"
+
+if [[ ! -f "$P2B_LOG" ]]; then
+  errors+=("missing P2b verification log: ${P2B_LOG#"$REPO_ROOT/"}")
+else
+  # Below-threshold ack (AC #1): the log must record the no-prompt path
+  # against an actual fixture set of fewer than 50 files.
+  if ! grep -qiE 'below.?threshold|no prompt|< 50|fewer than 50' "$P2B_LOG"; then
+    errors+=("verification-log-p2b.md: missing below-threshold (AC #1) evidence")
+  fi
+  # Above-threshold ack (AC #2/#3/#4): the log must document a fixture
+  # with ≥50 candidate files, the directory-group prompt rendering, the
+  # accept/reject/subset response, and the scope log line.
+  if ! grep -qiE 'above.?threshold|≥ ?50|>= ?50|50 or more' "$P2B_LOG"; then
+    errors+=("verification-log-p2b.md: missing above-threshold (AC #2) evidence")
+  fi
+  if ! grep -qiE 'accept all|reject all|subset' "$P2B_LOG"; then
+    errors+=("verification-log-p2b.md: missing accept/reject/subset (AC #3) evidence")
+  fi
+  if ! grep -qiE 'smart-scan: .* files' "$P2B_LOG"; then
+    errors+=("verification-log-p2b.md: missing 'smart-scan: ... files' scope-log line (AC #4)")
+  fi
+  # Exclusion-list ack (AC #5): the log must demonstrate that excluded
+  # paths in the above-threshold fixture are not counted toward the
+  # threshold and are not read.
+  if ! grep -qiE 'excluded|not (scanned|read)' "$P2B_LOG"; then
+    errors+=("verification-log-p2b.md: missing exclusion evidence (AC #5)")
+  fi
+  # Threshold-doc ack (AC #6): the log should reference the named
+  # SMART_SCAN_THRESHOLD constant so changes to the value require a
+  # documented log update.
+  if ! grep -qF 'SMART_SCAN_THRESHOLD' "$P2B_LOG"; then
+    errors+=("verification-log-p2b.md: missing SMART_SCAN_THRESHOLD reference (AC #6)")
+  fi
+fi
+
+# Above-threshold fixture: must exist, must contain ≥50 .tsx/.jsx files
+# under non-excluded paths, and must include at least one file under each
+# of the canonical excluded paths to prove they are filtered out.
+if [[ ! -d "$ABOVE_DIR" ]]; then
+  errors+=("missing above-threshold fixture directory: ${ABOVE_DIR#"$REPO_ROOT/"}")
+else
+  scanned_count=$(find "$ABOVE_DIR" -type f \( -name '*.tsx' -o -name '*.jsx' \) \
+    ! -path '*/node_modules/*' \
+    ! -path '*/dist/*' \
+    ! -path '*/build/*' \
+    ! -path '*/.next/*' \
+    ! -path '*/coverage/*' \
+    ! -name '*.test.*' \
+    ! -name '*.stories.*' \
+    | wc -l | tr -d ' ')
+  if (( scanned_count < 50 )); then
+    errors+=("above-threshold fixture has only $scanned_count post-exclusion files — need ≥ 50 to exercise AC #2")
+  fi
+  # Each canonical exclusion path must be represented by at least one file
+  # so the fixture proves AC #5 (excluded dirs never read regardless of
+  # threshold).
+  # Two exclusion families: directory prefixes vs file globs. Directory
+  # entries (including dot-prefix ones like .next) are looked up as
+  # `-type d`; glob entries (*.test.*, *.stories.*) are looked up as
+  # `-type f`.
+  for excl_dir in node_modules dist build .next coverage; do
+    found=$(find "$ABOVE_DIR" -type d -name "$excl_dir" | head -1)
+    if [[ -z "$found" ]]; then
+      errors+=("above-threshold fixture missing exclusion sample directory '$excl_dir/' — AC #5 cannot be exercised without it")
+    fi
+  done
+  for excl_glob in '*.test.*' '*.stories.*'; do
+    found=$(find "$ABOVE_DIR" -type f -name "$excl_glob" | head -1)
+    if [[ -z "$found" ]]; then
+      errors+=("above-threshold fixture missing exclusion sample file matching '$excl_glob' — AC #5 cannot be exercised without it")
+    fi
+  done
 fi
 
 # 5. gh-only constraint guard (slice 7) -------------------------------------
