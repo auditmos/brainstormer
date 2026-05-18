@@ -1,5 +1,7 @@
 # Brainstormer
 
+[![validate](https://github.com/auditmos/brainstormer/actions/workflows/validate.yml/badge.svg)](https://github.com/auditmos/brainstormer/actions/workflows/validate.yml)
+
 Take any idea from rough concept to dev-ready deliverables — PRD, phased plan, and dependency-ordered GitHub issues — using structured AI-assisted skills.
 
 ## Why
@@ -136,6 +138,16 @@ Point your agent at `llms.txt` in the repo root for programmatic discovery of al
 ## Extending
 
 Brainstormer is technology-agnostic at the planning layer. After the tech stack is decided, add project-specific skills per engagement (e.g., deployment procedures, coding standards).
+
+## Contributing
+
+After cloning, enable the repo's pre-commit hooks so SKILL.md descriptions, plugin/marketplace sync, and rule-card structure are validated before each commit:
+
+```bash
+git config core.hooksPath .githooks
+```
+
+The same checks run in CI on every PR (see the `validate` badge above), so a missing local hook will not slip past — it just shortens the feedback loop from "PR red" to "commit blocked".
 
 ## License
 

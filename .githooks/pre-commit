@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+# Brainstormer pre-commit hook.
+#
+# Enable with:
+#   git config core.hooksPath .githooks
+#
+# Runs every known repo validator. Each check prints a section header so a
+# failure makes it obvious which validator tripped. The hook fails fast on
+# the first non-zero exit so the offending output stays at the bottom of the
+# terminal where the user is already looking.
+#
+# To skip in an emergency:
+#   git commit --no-verify        (avoid: better to fix the underlying issue)
+
+set -eo pipefail
+
+REPO_ROOT="$(git rev-parse --show-toplevel)"
+cd "$REPO_ROOT"
+
+run() {
+  local label="$1"; shift
+  echo "── $label ──"
+  "$@"
+  echo ""
+}
+
+run "SKILL.md description length (<= 1024 chars)" \
+    ./scripts/validate-skill-descriptions.sh
+
+run "Plugin / marketplace / llms.txt sync" \
+    ./scripts/validate-plugin-sync.sh
+
+run "react-audit skill structure" \
+    ./scripts/validate-react-audit.sh
+
+run "Rule card library + index" \
+    ./scripts/validate-rule-cards.sh
