@@ -1,0 +1,5 @@
+{
+  "name": "orient",
+  "description": "Zoom out for a higher-level map of modules and callers when unfamiliar with an area of code",
+  "version": "1.0.0"
+}

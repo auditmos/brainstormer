@@ -124,6 +124,15 @@
         "url": "https://github.com/auditmos/brainstormer.git",
         "path": "plugins/react-audit"
       }
+    },
+    {
+      "name": "orient",
+      "description": "Zoom out for a higher-level map of modules and callers when unfamiliar with an area of code",
+      "source": {
+        "source": "git-subdir",
+        "url": "https://github.com/auditmos/brainstormer.git",
+        "path": "plugins/orient"
+      }
     }
   ]
 }

@@ -26,7 +26,7 @@ Consultants, product owners, founders, and technical leads — working with any 
 claude plugin install <repo-url>
 ```
 
-All 12 skills become available via `/` commands in any project.
+All 13 skills become available via `/` commands in any project.
 
 ### Manual Install (Claude Code)
 
@@ -68,6 +68,7 @@ cd brainstormer
 | Improve CLAUDE.md | `/improve-claude-md` | Audit and optimize CLAUDE.md files with conditional importance tags |
 | Agent CLI | `/agent-cli` | Design and audit CLIs intended for AI agents — seven principles with severity rubric |
 | Handoff | `/handoff` | Capture the current chat as a structured handoff doc (.md + .txt) for Codex, Cursor, or another IDE agent |
+| Orient | `/orient` | Zoom out a layer of abstraction — map relevant modules and callers in project vocabulary |
 
 ## Recommended Workflow
 
