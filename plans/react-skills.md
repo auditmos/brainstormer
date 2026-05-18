@@ -95,7 +95,7 @@ The full set of 11 useEffect anti-pattern cards from [react.dev/learn/you-might-
 
 ## Phase 2c: Rerender cards + grouping
 
-**Status**: ✅ shipped — issue #5
+**Status**: ✅ shipped — issue #5 — commit 4cad5f8
 
 **User stories**: 8, 14, 23, 24
 
