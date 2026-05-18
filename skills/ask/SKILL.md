@@ -7,6 +7,8 @@ description: Discovery interview and requirements gathering session. Pressure-te
 
 Interview me relentlessly about every aspect of this plan until we reach a shared understanding. Walk down each branch of the design tree, resolving dependencies between decisions one-by-one.
 
+**Ask the questions one at a time, waiting for feedback on each question before continuing.** Never batch or group questions, even when they feel tightly coupled — the client's answer to Q1 often reshapes Q2.
+
 ## Interview Tracks
 
 Select and adapt tracks based on context. You do not need to cover every track — use judgment.

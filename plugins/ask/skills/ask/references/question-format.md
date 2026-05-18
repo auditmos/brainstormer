@@ -22,4 +22,4 @@ Client can reply with just the number (e.g. "3" or "Q3: 3"). Free-form answers a
 
 ## Multiple Questions
 
-Ask one question at a time. Wait for a response before moving to the next. Exception: tightly coupled yes/no follow-ups can be grouped (still numbered individually).
+Ask one question at a time. Wait for a response before moving to the next. No exceptions — even tightly coupled follow-ups go one at a time, because the client's answer to the first question often reshapes the second.
