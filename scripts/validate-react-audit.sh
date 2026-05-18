@@ -55,11 +55,14 @@ if [[ -f "$SKILL_FILE" ]]; then
     fi
   done
 
-  # Each module must declare a concrete contract symbol.
+  # Each module must declare a concrete contract symbol. Phase 2c
+  # supersedes Phase 1's `createIssue(` with `upsertGroupedIssue(` (one
+  # issue per (skill, rule_id) group instead of one issue per occurrence);
+  # the symbol list below is the current set.
   for required_symbol in \
     "loadCard(" \
     "scan(" \
-    "createIssue(" \
+    "upsertGroupedIssue(" \
     "enumerateScanTargets("
   do
     if ! grep -qF "$required_symbol" "$SKILL_FILE"; then
@@ -241,6 +244,129 @@ else
       errors+=("above-threshold fixture missing exclusion sample file matching '$excl_glob' — AC #5 cannot be exercised without it")
     fi
   done
+fi
+
+# 4c. Phase 2c — rerender cards + grouped issue contract -------------------
+#    SKILL.md must document the grouped emission contract (one issue per
+#    `(skill, rule_id)` group), the per-occurrence body shape (file:line +
+#    ~5 lines of context per finding, per-occurrence severity), and the
+#    `<details>` collapsible rule for oversized cards. The shared card
+#    library must ship the four canonical rerender cards. A P2c
+#    verification log must exist and walk each P2c AC.
+
+CARDS_DIR_RERENDERS="$REPO_ROOT/skills/react-shared/references/cards/rerenders"
+P2C_LOG="$FIXTURES_DIR/verification-log-p2c.md"
+
+# Four canonical rerender cards (AC #1 / index AC #2).
+for rerender_slug in \
+  "inline-object-prop" \
+  "inline-array-prop" \
+  "missing-memo-on-list-row" \
+  "context-too-broad"
+do
+  if [[ ! -f "$CARDS_DIR_RERENDERS/$rerender_slug.md" ]]; then
+    errors+=("missing rerender card: skills/react-shared/references/cards/rerenders/$rerender_slug.md — Phase 2c AC #1 requires all four cards")
+  fi
+done
+
+if [[ -f "$SKILL_FILE" ]]; then
+  # Workflow must call into the grouped emission path. Phase 2c collapses
+  # findings by `(skill, rule_id)` before issue creation — the Workflow
+  # section needs an explicit invocation symbol so a reader sees the
+  # grouping step (AC #3).
+  workflow_section_p2c=$(awk '
+    /^## Workflow$/ { in_section = 1; next }
+    in_section && /^## / { exit }
+    in_section { print }
+  ' "$SKILL_FILE")
+  if ! grep -qE 'upsertGroupedIssue\(|groupFindings\(' <<< "$workflow_section_p2c"; then
+    errors+=("SKILL.md: Workflow section does not invoke a grouped-emission symbol (upsertGroupedIssue( or groupFindings() — AC #3 requires one issue per (skill, rule_id) group")
+  fi
+
+  # Issue Manager section must declare the grouped contract symbol and
+  # describe the per-occurrence body shape.
+  issue_mgr_section=$(awk '
+    /^## Issue Manager$/ { in_section = 1; next }
+    in_section && /^## / { exit }
+    in_section { print }
+  ' "$SKILL_FILE")
+  if ! grep -qF 'upsertGroupedIssue(' <<< "$issue_mgr_section"; then
+    errors+=("SKILL.md: Issue Manager section does not declare 'upsertGroupedIssue(' contract — AC #3 requires the grouped emission contract")
+  fi
+  if ! grep -qE '\(skill,[[:space:]]*rule_id\)|skill, rule_id' <<< "$issue_mgr_section"; then
+    errors+=("SKILL.md: Issue Manager section does not reference grouping by '(skill, rule_id)' — AC #3 requires this as the group key")
+  fi
+  if ! grep -qiE '<details>|collapsible' <<< "$issue_mgr_section"; then
+    errors+=("SKILL.md: Issue Manager section does not document '<details>' collapsible rule — AC #4 requires the >80-line / >2 bad-good pair threshold")
+  fi
+  if ! grep -qiE '80 ?lines?|>80|over 80|exceed.*80' <<< "$issue_mgr_section"; then
+    errors+=("SKILL.md: Issue Manager section does not state the ~80-line threshold for <details> wrapping — AC #4")
+  fi
+  if ! grep -qiE 'per[- ]occurrence|per[- ]finding' <<< "$issue_mgr_section"; then
+    errors+=("SKILL.md: Issue Manager section does not document per-occurrence (per-finding) severity in grouped body — AC #5 requires per-finding contextual severity to appear in the body")
+  fi
+  if ! grep -qiE 'file:line|file:.*line|<file>:<line>' <<< "$issue_mgr_section"; then
+    errors+=("SKILL.md: Issue Manager section does not document 'file:line' per-occurrence format — AC #6 requires per-finding file:line in the grouped body")
+  fi
+  if ! grep -qiE '~?5[- ]lines? (of )?context|five lines of context' <<< "$issue_mgr_section"; then
+    errors+=("SKILL.md: Issue Manager section does not document ~5 lines of context per occurrence — AC #6")
+  fi
+
+  # Workflow must dispatch across the rerenders/ category, not just
+  # effects/. Phase 2c extends the load step to include all MVP cards.
+  if ! grep -qE 'listCards\(\)|listCards\(\"rerenders\"|rerenders' <<< "$workflow_section_p2c"; then
+    errors+=("SKILL.md: Workflow section does not load rerenders/ cards — AC #1 requires Phase 2c dispatch across all 15 MVP cards")
+  fi
+fi
+
+# P2c verification log — walks AC #1 through #6 against the rerenders
+# fixture pair.
+if [[ ! -f "$P2C_LOG" ]]; then
+  errors+=("missing P2c verification log: ${P2C_LOG#"$REPO_ROOT/"}")
+else
+  # AC #1 — four rerender cards referenced by id
+  for rerender_id in \
+    "rerenders/inline-object-prop" \
+    "rerenders/inline-array-prop" \
+    "rerenders/missing-memo-on-list-row" \
+    "rerenders/context-too-broad"
+  do
+    if ! grep -qF "$rerender_id" "$P2C_LOG"; then
+      errors+=("verification-log-p2c.md: rule '$rerender_id' not referenced (AC #1)")
+    fi
+  done
+  # AC #2 — log mentions the 15-card total
+  if ! grep -qE '15 (MVP )?cards?|fifteen cards|all 15' "$P2C_LOG"; then
+    errors+=("verification-log-p2c.md: missing 15-card total (AC #2)")
+  fi
+  # AC #3 — grouped emission demonstrated
+  if ! grep -qiE 'grouped|one issue per|single issue|N occurrences' "$P2C_LOG"; then
+    errors+=("verification-log-p2c.md: missing grouped-emission evidence (AC #3)")
+  fi
+  # AC #4 — <details> collapsible mentioned
+  if ! grep -qF '<details>' "$P2C_LOG"; then
+    errors+=("verification-log-p2c.md: missing '<details>' collapsible evidence (AC #4)")
+  fi
+  # AC #5 — per-occurrence severity split demonstrated
+  if ! grep -qiE 'hot.?path.*cold.?path|cold.?path.*hot.?path|Blocker.*Friction|Friction.*Blocker' "$P2C_LOG"; then
+    errors+=("verification-log-p2c.md: missing hot-path/cold-path severity split (AC #5)")
+  fi
+  # AC #6 — per-occurrence file:line + ~5 lines of context
+  if ! grep -qiE 'file:line|~?5[- ]lines? (of )?context' "$P2C_LOG"; then
+    errors+=("verification-log-p2c.md: missing per-occurrence file:line + 5-line context evidence (AC #6)")
+  fi
+fi
+
+# Rerenders fixture — at minimum a hot-path and a cold-path file
+# demonstrating the same rule firing in both contexts (AC #5).
+RERENDERS_FIXTURE_DIR="$FIXTURES_DIR/seeded-rerenders"
+if [[ ! -d "$RERENDERS_FIXTURE_DIR" ]]; then
+  errors+=("missing rerenders fixture directory: ${RERENDERS_FIXTURE_DIR#"$REPO_ROOT/"} — AC #3/#5 require a fixture demonstrating grouped emission and hot/cold severity split")
+else
+  rerenders_fixture_count=$(find "$RERENDERS_FIXTURE_DIR" -type f -name '*.tsx' | wc -l | tr -d ' ')
+  if (( rerenders_fixture_count < 2 )); then
+    errors+=("rerenders fixture has only $rerenders_fixture_count .tsx file(s) — need ≥ 2 (hot-path + cold-path) to exercise AC #5")
+  fi
 fi
 
 # 5. gh-only constraint guard (slice 7) -------------------------------------

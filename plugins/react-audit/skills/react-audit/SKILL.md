@@ -1,17 +1,24 @@
 ---
 name: react-audit
-description: Audit a React/TSX repository for React anti-patterns by loading rule cards from the brainstormer card library, scanning source files via the strategy each card declares, and filing one GitHub issue per finding via the `gh` CLI. Phase 2b adds a smart-scan front step that enumerates candidates via `git ls-files`, applies a canonical exclusion list, and asks the user before scanning when the matching count meets the documented threshold. Phase 2a's full 11-card effects library from react.dev/learn/you-might-not-need-an-effect remains in scope; manual invocation only — no hooks, no scheduled execution. Triggers on `/react-audit`, "audit this repo for react anti-patterns", "scan for useEffect anti-patterns", "run a react audit", or similar phrasing requesting a React/UI quality scan with GitHub-issue output. Skip for design questions, scaffolding requests, or audits of non-React frameworks (Vue, Svelte, Solid).
+description: Audit a React/TSX repository for React anti-patterns by loading rule cards from the brainstormer card library, scanning source files via each card's declared detect strategy, and filing one grouped GitHub issue per `(skill, rule_id)` via the `gh` CLI. Phase 2c collapses findings — every occurrence of the same rule lands in a single issue body with per-occurrence `file:line`, ~5 lines of context, and per-finding severity — and adds the four canonical rerender cards from react-doctor / Million on top of Phase 2a's 11 effects cards (15 MVP total). Phase 2b's smart-scan front step (`git ls-files`, canonical exclusion list, threshold prompt at `SMART_SCAN_THRESHOLD=50`) stays unchanged. Manual invocation only — no hooks. Triggers on `/react-audit`, "audit this repo for react anti-patterns", "scan for useEffect or re-render anti-patterns", "run a react audit". Skip design questions, scaffolding, or audits of non-React frameworks (Vue, Svelte, Solid).
 ---
 
-# React Audit — Phase 2b (smart scan + 11-card effects dispatch)
+# React Audit — Phase 2c (rerender cards + grouped emission)
 
-Manual-invocation skill that loads every shipping card under the `effects/`
-category, scans the current repository for occurrences of each anti-pattern,
-and files a GitHub issue per finding. Phase 2b layers a Smart Scan front
-step (candidate enumeration, canonical exclusion list, interactive
-threshold prompt) on top of the Phase 2a 11-card dispatch from
+Manual-invocation skill that loads every shipping card from the
+brainstormer card library, scans the current repository for occurrences of
+each anti-pattern, and files **one grouped GitHub issue per
+`(skill, rule_id)`** — every occurrence of the same rule collapses into a
+single issue whose body lists each finding with its own `file:line`,
+context block, and contextually-assigned severity. Phase 2c ships the
+four canonical rerender cards from
+[www.react.doctor](https://www.react.doctor/) /
+[millionco/react-doctor](https://github.com/millionco/react-doctor) on top
+of the Phase 2a 11-card effects library from
 [react.dev/learn/you-might-not-need-an-effect](https://react.dev/learn/you-might-not-need-an-effect)
-— no grouping, no dedup; those arrive in Phases 2c / 3.
+(15 MVP cards total). The Phase 2b smart-scan front step (candidate
+enumeration, canonical exclusion list, interactive threshold prompt)
+remains unchanged. Dedup / re-run lifecycle arrives in Phase 3.
 
 ## Usage
 
@@ -19,35 +26,41 @@ threshold prompt) on top of the Phase 2a 11-card dispatch from
 /react-audit
 ```
 
-The skill takes no arguments. It loads every card in the `effects/` category
-via `listCards("effects")`, scans every tracked `*.tsx`/`*.jsx` file in the
-current repo, and creates one issue per finding (one issue per occurrence,
-per rule — grouping arrives in Phase 2c).
+The skill takes no arguments. It loads every shipping card via
+`listCards()` (no category filter — Phase 2c dispatches across both
+`effects/` and `rerenders/`, fifteen cards total), scans every tracked
+`*.tsx`/`*.jsx` file in the current repo, groups findings by
+`(skill, rule_id)`, and creates one issue per group.
 
-## Scope Boundaries (Phase 2b)
+## Scope Boundaries (Phase 2c)
 
-- **All shipping `effects/` cards** — Phase 2a ships eleven cards. The
-  scanner dispatches across each card listed in
-  `skills/react-shared/references/cards/index.md` under the `effects/`
-  category. Adding a new card to the index automatically extends the scan;
-  no skill-side change required.
-- **Smart scan front step** — Phase 2b inserts `enumerateScanTargets()`
-  ahead of the scan. Candidate files come from `git ls-files`; the canonical
-  exclusion list is applied unconditionally; the threshold prompt fires only
-  when the post-exclusion count meets the documented constant.
+- **All shipping cards across `effects/` and `rerenders/`** — Phase 2c
+  loads every card listed in `skills/react-shared/references/cards/index.md`
+  regardless of category. The MVP totals fifteen cards (eleven effects +
+  four rerenders). Adding a new card to the index automatically extends
+  the scan; no skill-side change required.
+- **Grouped emission** — findings collapse by `(skill, rule_id)` and ship
+  as one issue per group. The body lists every occurrence under one card
+  embedding, with per-occurrence `file:line`, ~5 lines of context, and
+  per-finding severity. Phase 2c replaces Phase 1/2a/2b's issue-per-
+  occurrence model.
+- **Smart scan front step** — Phase 2b's `enumerateScanTargets()` runs
+  unchanged ahead of the scan. Candidate files come from `git ls-files`;
+  the canonical exclusion list is applied unconditionally; the threshold
+  prompt fires only when the post-exclusion count meets
+  `SMART_SCAN_THRESHOLD`.
 - **Create-only** — no dedup, no in-place body update, no regression
-  backlinking. Re-running creates duplicate issues. Dedup arrives in Phase 3.
-- **No grouping** — one issue per occurrence per rule. Grouping by
-  `(skill, rule_id)` arrives in Phase 2c.
+  backlinking. Re-running creates duplicate grouped issues. Dedup arrives
+  in Phase 3.
 - **`gh` CLI only** — no `curl`, no `WebFetch`, no Octokit. All GitHub
   interaction goes through the `gh` binary already configured in the user's
   shell.
 
 ## Workflow
 
-1. Resolve the rule set: `cards = listCards("effects")`. The Rule Card
-   Library reads `references/cards/index.md` and returns every card whose
-   category is `effects`. Phase 2a returns eleven cards.
+1. Resolve the rule set: `cards = listCards()`. The Rule Card Library
+   reads `references/cards/index.md` and returns every shipping card —
+   Phase 2c returns fifteen cards (eleven `effects/` + four `rerenders/`).
 2. Enumerate scan targets via Smart Scan:
    `files = enumerateScanTargets()`. The module runs `git ls-files`, applies
    the canonical exclusion list, then either returns the file set
@@ -55,15 +68,24 @@ per rule — grouping arrives in Phase 2c).
    accept-all / reject-all / select a subset of directory groups (count at
    or above the threshold). The selected scope is logged before step 3.
 3. Produce findings: `findings = scan(files, cards)`. The scanner dispatches
-   each card by its declared `detect` strategy (Phase 2a — all eleven cards
-   use `llm-judge`).
-4. For each finding, file an issue:
-   `createIssue(repo=<cwd>, label="react-audit:" + finding.rule_id, finding)`.
-   The label is derived per-finding from the matched rule, not hardcoded.
-5. Print every created issue URL to stdout for the user.
+   each card by its declared `detect` strategy. Severity is assigned
+   per-finding contextually via the hot-path heuristic in the Code Scanner
+   section — the same `rule_id` can appear at different severities in the
+   same scan.
+4. Group findings by `(skill, rule_id)`:
+   `groups = groupFindings(findings)`. Each group's key is the
+   `react-audit:<rule_id>` label; the value is the list of every
+   occurrence (preserving severity per-finding).
+5. For each group, file one issue:
+   `upsertGroupedIssue(repo=<cwd>, label="react-audit:" + rule_id, findings)`.
+   The body embeds the matched card once, then lists each occurrence with
+   its own `file:line`, severity, and ~5-line context block.
+6. Print every created issue URL to stdout for the user.
 
 If `findings` is empty, exit with a single-line summary `0 findings` and
-create no issues.
+create no issues. If all rules return zero findings, no issues are filed
+at all; partial-rule emptiness simply means the empty rule contributes
+no group.
 
 ## Rule Card Library
 
@@ -157,32 +179,72 @@ Never downgrade.
 
 ## Issue Manager
 
-Create-only at Phase 1. Re-runs duplicate; dedup arrives in Phase 3.
+Phase 2c collapses findings by `(skill, rule_id)` and emits one issue per
+group. Create-only — re-runs still duplicate; dedup / re-run lifecycle
+arrives in Phase 3.
 
 ### Contract
 
 ```
-createIssue(repo: string, label: string, finding: Finding) → URL
+groupFindings(findings: Finding[]) → Map<label, Finding[]>
+upsertGroupedIssue(repo: string, label: string, findings: Finding[]) → URL
 ```
+
+`groupFindings` keys each group by `react-audit:<rule_id>` — the same
+shape as the `label` argument to `upsertGroupedIssue`. The map preserves
+the per-finding severity assigned by the Code Scanner; the Issue Manager
+never recomputes severity.
 
 ### Behavior
 
 - `repo` is always the current working directory (`gh` resolves the GitHub
   repo from git remotes).
-- `label` is always `react-audit:<finding.rule_id>` — e.g.
-  `react-audit:effects/computing-derived-state`. Must be applied to the
-  created issue.
-- Title: `[react-audit] <finding.rule_id> at <basename(finding.file)>:<finding.line>`.
-- Body: the full card body (verbatim), followed by an "## Occurrence"
-  section with `<finding.file>:<finding.line>`, the severity, and the 5-line
-  context block in a fenced TSX code block.
+- `label` is always `react-audit:<rule_id>` — e.g.
+  `react-audit:rerenders/inline-object-prop`. One label per group; the
+  same label is applied to every issue created for that `(skill, rule_id)`
+  pair.
+- Title: `[react-audit] <rule_id> (<N> occurrence<s>)` where `N =
+  findings.length`. Example: `[react-audit] rerenders/inline-object-prop
+  (4 occurrences)`. The single-occurrence title is allowed to read
+  `(1 occurrence)`; do not silently drop the count.
+- Body shape — three regions, in order:
+
+  1. **Rule card embedding.** The card body verbatim, identical to how
+     Phase 1/2a/2b rendered it. When the card body exceeds ~80 lines
+     *or* contains more than two `## Bad` / `## Good` pair sections, the
+     full card is wrapped in a single `<details>` block whose
+     `<summary>` reads `Rule card — <rule_id>` and the card body lives
+     inside. Cards under the threshold are inlined without `<details>`
+     so the high-signal short cards stay easy to skim.
+  2. **Severity summary line.** A single line of the form
+     `Severity: <count Blocker> Blocker · <count Friction> Friction ·
+     <count Optimization> Optimization` so the reader sees the per-finding
+     severity split at a glance without scrolling through occurrences.
+  3. **Occurrence list.** One `### Occurrence — <file:line>` heading per
+     finding, each followed by:
+     - a `Severity:` line carrying that occurrence's per-finding severity
+       (so the same `rule_id` can list a `Blocker` and a `Friction`
+       occurrence in the same body — see Code Scanner §Severity
+       assignment for how the value is determined);
+     - the ~5-line context block (two lines before, the offending line,
+       two lines after) in a fenced TSX code block. The fenced block uses
+       `tsx` as the language tag so syntax highlighting works on
+       github.com.
+
+  When the occurrence count exceeds 10, the occurrence list is itself
+  wrapped in a `<details>` whose `<summary>` reads `<N> occurrences` —
+  the per-occurrence file:line headings stay visible inside, but the
+  block is collapsed by default so the issue page renders cleanly on
+  scan-heavy days.
+
 - Implementation: shell out to
   `gh issue create --title <title> --label <label> --body-file <tmpfile>`.
-  No other GitHub interaction mechanism is permitted (no `curl`, no
-  `WebFetch`, no Octokit, no `api.github.com` direct calls).
-- Returns the URL printed by `gh issue create` on success. On `gh` failure,
-  surface the stderr verbatim — do not retry (avoids creating a duplicate
-  on transient failure).
+  One invocation per `(skill, rule_id)` group. No other GitHub
+  interaction mechanism is permitted (no `curl`, no `WebFetch`, no
+  Octokit, no `api.github.com` direct calls).
+- Returns the URL printed by `gh issue create` on success. On `gh`
+  failure, surface the stderr verbatim — do not retry (avoids creating a
+  duplicate grouped issue on transient failure).
 
 ## Smart Scan
 
@@ -297,36 +359,50 @@ SKILL.md bug.
   flowed into the scan). This makes the audit reproducible from logs
   alone.
 
-## Acceptance Checklist (Phase 2b)
+## Acceptance Checklist (Phase 2c)
 
-Inherits the Phase 2a multi-rule-dispatch checks and layers on the Smart
-Scan front-step checks introduced by issue #4:
+Inherits the Phase 2a multi-rule-dispatch checks and the Phase 2b
+smart-scan front-step checks, and layers on the rerender-cards +
+grouped-emission checks introduced by issue #5:
 
-- [ ] `listCards("effects")` returns every shipping `effects/` card listed
-      in `references/cards/index.md` (eleven at Phase 2a)
-- [ ] `scan(seeded_p2a_fixture_files, cards)` produces exactly eleven
-      Findings — one per shipping card, anchored at the seeded fixture's
-      `useEffect` block
-- [ ] `scan(clean_fixture_files, cards)` produces zero Findings
-- [ ] Each `createIssue` invocation labels with
-      `react-audit:" + finding.rule_id` and embeds the matched card's body
-      verbatim in the issue body
-- [ ] LLM-judge calls are cached per `(file_hash, rule_id)` within a single
-      run so a re-prompt for the same file × rule reuses the prior verdict
-- [ ] No call to `curl`, `WebFetch`, `@octokit`, or `api.github.com` is made
-      anywhere in the skill's execution path
-- [ ] `enumerateScanTargets()` returns immediately (no prompt) when the
-      post-exclusion file count is below `SMART_SCAN_THRESHOLD`
-- [ ] `enumerateScanTargets()` groups files by top-level directory and
-      prompts the user with per-group counts when the post-exclusion file
-      count is at or above `SMART_SCAN_THRESHOLD`
-- [ ] The prompt accepts `all`, `none`, and comma-separated letter subsets;
-      the resulting file set matches the user's selection
-- [ ] A `smart-scan: <N> files ...` log line is emitted before the Code
-      Scanner runs, on both the below-threshold and above-threshold paths
-- [ ] Every path under `node_modules/`, `dist/`, `build/`, `.next/`,
-      `coverage/`, `**/*.test.*`, `**/*.stories.*` is dropped before the
-      threshold check; the Code Scanner never opens these files
-- [ ] `SMART_SCAN_THRESHOLD` is declared as a named constant in
-      `## Smart Scan → ### Configuration` so it can be adjusted without
-      editing the Workflow or dispatch prose
+- [ ] `listCards()` returns every shipping card listed in
+      `references/cards/index.md` — fifteen at Phase 2c (eleven `effects/`
+      + four `rerenders/`)
+- [ ] All four canonical rerender cards
+      (`rerenders/inline-object-prop`, `rerenders/inline-array-prop`,
+      `rerenders/missing-memo-on-list-row`, `rerenders/context-too-broad`)
+      exist with valid frontmatter and self-contained bodies citing
+      react-doctor / Million sources
+- [ ] `scan(seeded_p2a_fixture_files, cards)` continues to produce
+      eleven `effects/` Findings (Phase 2a contract preserved)
+- [ ] `scan(seeded_rerenders_fixture_files, cards)` produces multiple
+      occurrences of at least one `rerenders/` rule across both hot-path
+      and cold-path files, so the per-finding severity split is
+      observable
+- [ ] `groupFindings(findings)` collapses every occurrence sharing a
+      `(skill, rule_id)` pair into a single group keyed by
+      `react-audit:<rule_id>`
+- [ ] `upsertGroupedIssue` is called once per group; on a fixture with N
+      occurrences of the same rule, exactly one issue is created with N
+      occurrences listed in the body
+- [ ] The issue body wraps the card section in `<details>` when the card
+      body exceeds ~80 lines or contains more than two `## Bad`/`## Good`
+      pair sections
+- [ ] The issue body's severity summary line and per-occurrence
+      `Severity:` lines reflect the per-finding severity assigned by the
+      Code Scanner — the same `rule_id` can show a `Blocker` occurrence
+      and a `Friction` occurrence in the same grouped body
+- [ ] Each occurrence in the grouped body shows a `### Occurrence —
+      <file:line>` heading followed by a fenced TSX code block with ~5
+      lines of context
+- [ ] LLM-judge calls remain cached per `(file_hash, rule_id)` within a
+      single run
+- [ ] No call to `curl`, `WebFetch`, `@octokit`, or `api.github.com` is
+      made anywhere in the skill's execution path
+- [ ] `enumerateScanTargets()` continues to return immediately when the
+      post-exclusion count is below `SMART_SCAN_THRESHOLD` and to prompt
+      with directory groups at or above the threshold
+- [ ] The Phase 2b canonical exclusion list (`node_modules/`, `dist/`,
+      `build/`, `.next/`, `coverage/`, `**/*.test.*`, `**/*.stories.*`)
+      and `SMART_SCAN_THRESHOLD = 50` declaration both remain in place
+      unchanged

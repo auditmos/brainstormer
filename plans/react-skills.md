@@ -95,6 +95,8 @@ The full set of 11 useEffect anti-pattern cards from [react.dev/learn/you-might-
 
 ## Phase 2c: Rerender cards + grouping
 
+**Status**: ✅ shipped — issue #5
+
 **User stories**: 8, 14, 23, 24
 
 ### What to build
@@ -105,12 +107,12 @@ Issue Manager evolves from one-issue-per-finding to grouped emission: all findin
 
 ### Acceptance criteria
 
-- [ ] All 4 rerender cards exist with valid frontmatter, citing react-doctor / Million sources
-- [ ] Card index updated to include all 15 MVP cards
-- [ ] On a fixture with N occurrences of the same rule, exactly one issue is created with N occurrences listed in the body
-- [ ] Issue body uses `<details>` collapsibles when card content exceeds ~80 lines
-- [ ] Severity assignment differs between hot-path and cold-path occurrences of the same rule on the same fixture
-- [ ] Per-finding `file:line` and ~5 lines of context appear in every grouped issue
+- [x] All 4 rerender cards exist with valid frontmatter, citing react-doctor / Million sources
+- [x] Card index updated to include all 15 MVP cards
+- [x] On a fixture with N occurrences of the same rule, exactly one issue is created with N occurrences listed in the body
+- [x] Issue body uses `<details>` collapsibles when card content exceeds ~80 lines
+- [x] Severity assignment differs between hot-path and cold-path occurrences of the same rule on the same fixture
+- [x] Per-finding `file:line` and ~5 lines of context appear in every grouped issue
 
 ---
 

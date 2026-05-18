@@ -21,3 +21,10 @@
 - [effects/resetting-all-state-on-prop-change](effects/resetting-all-state-on-prop-change.md) — `useEffect` resets every piece of state when a key-like prop changes, instead of remounting via `key`
 - [effects/adjusting-state-on-prop-change](effects/adjusting-state-on-prop-change.md) — `useEffect` adjusts a single piece of state on prop change, instead of adjusting during render with a previous-prop comparison
 - [effects/sharing-logic-between-handlers](effects/sharing-logic-between-handlers.md) — logic deduplicated into `useEffect` even though both triggers are event handlers — belongs in a shared helper called from each handler
+
+## rerenders
+
+- [rerenders/inline-object-prop](rerenders/inline-object-prop.md) — inline object literal as a JSX prop creates a reference-fresh value every render, silently defeating `React.memo` boundaries downstream
+- [rerenders/inline-array-prop](rerenders/inline-array-prop.md) — inline array literal as a JSX prop is reference-fresh every render — same mechanism as inline-object-prop, separate card so issue grouping by `(skill, rule_id)` keeps the two findings distinct
+- [rerenders/missing-memo-on-list-row](rerenders/missing-memo-on-list-row.md) — list row component declared without `React.memo`, so any parent state change re-renders every row even when row props are identical
+- [rerenders/context-too-broad](rerenders/context-too-broad.md) — single Context Provider value bundles unrelated state slices, forcing every consumer to re-render on any slice change; usually a Context-split or external-store refactor

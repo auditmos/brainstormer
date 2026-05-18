@@ -1,0 +1,115 @@
+---
+id: rerenders/inline-object-prop
+category: rerenders
+detect: ast
+source: https://www.react.doctor/
+---
+
+# Inline object literal as a prop
+
+Every render builds a fresh `{}` object for any prop whose value is written
+as an inline object literal in JSX. React compares props by reference, so
+the child sees a new prop every render — even when the *contents* are
+identical to the previous render. Any `React.memo` boundary, `useMemo` that
+depends on the prop, or `useEffect` that lists the prop in its dependency
+array is broken silently: the memoization yields nothing, the effect fires
+on every render, and the render cascade widens with the component tree.
+
+The fix has two shapes. If the object is logically stable, hoist it to
+module scope or stabilize it with `useMemo`. If the object content actually
+changes per render, the inline literal is correct — but then no `memo`
+boundary downstream is going to help, and the component shape should be
+revisited (lift state, pass primitives instead of an object, etc.).
+
+## Detection
+
+Syntactic. The pattern is an object expression (`{ ... }` not coming from
+an identifier) appearing as the value of a JSX attribute. A regex hits
+most cases, but `ast` is preferred because attribute values nest inside
+arbitrary expressions and ternaries — the AST walker visits every
+`JSXAttribute` whose `value` is a `JSXExpressionContainer` wrapping an
+`ObjectExpression`.
+
+Trigger conditions to flag:
+
+- A `JSXAttribute` value whose expression resolves to an `ObjectExpression`
+  not pulled from a stable identifier (module-scope `const`, `useMemo`,
+  `useRef().current`).
+- A spread attribute `{...{...}}` carrying an object literal directly.
+- Inline `style={{ ... }}` is a common offender; flag it unless the
+  containing element does not memoize anything downstream (the validator
+  cannot prove this — surface the finding and let the human decide).
+
+False-positive exemptions:
+
+- Components whose only consumer is the root `App`/`Layout` and that never
+  memoize. The finding is real but the cost is zero — surface as
+  Optimization severity rather than suppress.
+- Top-of-file `const STYLE = { ... }` patterns where the literal is hoisted
+  out of JSX are not flagged.
+
+## Bad
+
+```tsx
+function ProductRow({ product, onSelect }: { product: Product; onSelect: (id: string) => void }) {
+  // New { padding, border } every render → MemoizedDetails always re-renders.
+  return (
+    <MemoizedDetails
+      product={product}
+      style={{ padding: 8, border: '1px solid #ddd' }}
+      onSelect={onSelect}
+    />
+  );
+}
+```
+
+`MemoizedDetails` is wrapped in `React.memo`, yet it re-renders on every
+parent render because the inline `style` object is reference-fresh each
+time. The memo boundary buys nothing.
+
+## Good
+
+```tsx
+const ROW_STYLE = { padding: 8, border: '1px solid #ddd' };
+
+function ProductRow({ product, onSelect }: { product: Product; onSelect: (id: string) => void }) {
+  return (
+    <MemoizedDetails
+      product={product}
+      style={ROW_STYLE}
+      onSelect={onSelect}
+    />
+  );
+}
+```
+
+If the style depends on render-scoped values, stabilize with `useMemo`:
+
+```tsx
+const style = useMemo(
+  () => ({ padding: 8, border: highlighted ? '2px solid blue' : '1px solid #ddd' }),
+  [highlighted],
+);
+```
+
+## Severity guidance
+
+- **Optimization** (default) — extra renders, no user-visible bug. The
+  warning still has value because the inline literal silently breaks any
+  downstream `memo` boundary the human might add later.
+- **Friction** — when the receiving child is already wrapped in
+  `React.memo` or runs an effect listing the prop in its dependency array.
+  The intent of the memo boundary is being defeated by the parent.
+- **Blocker** — when the prop is consumed inside a render hot path
+  (`src/auth/`, `src/payment/`, `src/router/`, `*Provider.tsx`,
+  `*Layout.tsx`, `App.tsx`, `_app.tsx`, `route.tsx`) and the unnecessary
+  re-renders cascade across the subtree. Profile evidence is not required
+  to upgrade — the hot-path heuristic is sufficient by policy.
+
+## Citation
+
+react-doctor — [www.react.doctor](https://www.react.doctor/) canonical
+catalog of React render anti-patterns, maintained by Million as
+[millionco/react-doctor](https://github.com/millionco/react-doctor). The
+inline-object-prop rule is one of react-doctor's foundational lint targets;
+the canonical implementation lives in the linked GitHub repository.
