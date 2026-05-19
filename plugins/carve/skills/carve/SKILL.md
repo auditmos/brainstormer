@@ -37,6 +37,16 @@ Break the PRD into **tracer bullet** phases. Each phase is a thin vertical slice
 
 Follow the rules in [vertical-slice-rules.md](./references/vertical-slice-rules.md).
 
+**Push back on slice creep.** Every slice must trace to an explicit user story in the PRD. If a draft slice includes functionality not in the PRD ("while we're in there, let's also add X"), cut X — propose it as a follow-up phase or send it back to `/blueprint`. Phases that drift past the PRD turn `/tdd` into an open-ended design exercise.
+
+**Acceptance criteria must be verifiable.** For each phase, every AC must be one of:
+
+- (a) **automated test** — a test exists or can be written that asserts the behavior,
+- (b) **observable artifact** — a row in a table, a file on disk, a log line, a metric, or
+- (c) **runnable command** — `make X`, `curl Y`, `psql -c "…"` that returns a known result.
+
+"It works" or "feature complete" do not qualify. If an AC can't be reduced to one of these three, sharpen it before the phase ships to `/dispatch` or `/tdd`.
+
 ### 4. Quiz the user
 
 Present the proposed breakdown as a numbered list. For each phase show:

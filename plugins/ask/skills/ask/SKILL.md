@@ -63,6 +63,30 @@ If the conversation reveals domain-specific concerns, probe deeper:
 
 See [question-format.md](./references/question-format.md) for numbering rules and answer option formatting.
 
+## Surface, Don't Assume
+
+A discovery session is only as good as the assumptions it makes explicit. Three operational rules:
+
+**1. Restate every decision back before moving on.**
+After the client answers a non-trivial question, paraphrase the decision in your own words and wait for confirmation. Do not advance to the next question on a maybe.
+
+> Client: "We want it multi-tenant."
+> You: "Reading back: multi-tenant means a single deployment serving multiple customer organizations with logical isolation between their data. Correct?"
+
+**2. Present alternatives when the answer is ambiguous.**
+When the client's answer admits 2-3 reasonable interpretations, do NOT pick silently. Surface the options and let them choose.
+
+> Client: "We need multi-tenant."
+> You: "Multi-tenant can mean (a) shared DB with tenant_id columns, (b) schema-per-tenant in one DB, or (c) DB-per-tenant. Which matches what you have in mind?"
+
+**3. Push back when a feature smells premature.**
+If the client requests a capability that looks like premature optimization, premature scale, or premature flexibility, ask the simpler-version question BEFORE accepting the requirement. You are not arguing — you are testing the assumption.
+
+> Client: "We need real-time collaborative editing."
+> You: "Could v1 ship with last-write-wins or optimistic locking, and add operational transforms after the first cohort of users? What breaks if collaboration isn't real-time on day one?"
+
+The goal is to leave the session with an explicit list of named assumptions the client has signed off on — not a list of inferences you made.
+
 ## Session Flow
 
 1. **Broad**: Understand the what and why. Let the client describe their vision without interruption, then probe.
@@ -81,3 +105,4 @@ End every session with:
 - [ ] Key constraints and blockers surfaced
 - [ ] Compliance and regulatory needs addressed (if applicable)
 - [ ] Session summary produced with decisions and open questions
+- [ ] Explicit list of named assumptions (signed off by client) ready to hand off to `/blueprint`

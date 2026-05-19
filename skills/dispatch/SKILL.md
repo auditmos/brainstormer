@@ -27,6 +27,16 @@ Break the PRD into **tracer bullet** issues. Each issue is a thin vertical slice
 
 Slices may be 'HITL' or 'AFK'. HITL slices require human interaction, such as an architectural decision or a design review. AFK slices can be implemented and merged without human interaction. Prefer AFK over HITL where possible.
 
+**Agent-loopable AC test — applied to every issue before creation:**
+
+> *Could an AFK agent picking up this issue tomorrow tell, by itself, whether the work is done — without asking anyone?*
+
+If the answer is no, the acceptance criteria are too weak. Sharpen them until each AC reduces to a test, an observable artifact, or a runnable command. AFK issues with vague ACs become HITL issues by accident — the agent stalls on "is this what you wanted?" and the parallelism collapses.
+
+**HITL issues are allowed subjective ACs**, but the issue must be explicitly marked HITL and the subjective gate named ("design review by @owner before merge"). Don't ship a subjective AC under an AFK label.
+
+**Cut what wasn't asked.** Every slice traces to a user story in the PRD. If a draft issue includes work outside the PRD ("also refactor X while we're here"), drop it or file it as a separate issue. The downstream `/tdd` agent will implement exactly what the issue says — including the unscoped extra.
+
 ### 4. Quiz the user
 
 Present the proposed breakdown as a numbered list. For each slice, show:

@@ -36,6 +36,20 @@ Before writing any code:
 
 Ask: "What should the public interface look like? Which behaviors are most important to test?"
 
+**State assumptions before RED.** Before writing the first failing test, write down — in a comment in the test file, in the session notes, or in the PR description — the assumptions the test will encode:
+
+- Input shape (types, ranges, required/optional fields)
+- Output shape (types, error modes, side effects)
+- Boundary conditions (empty input, max input, null/undefined, concurrent calls)
+- What is intentionally NOT tested in this iteration
+
+Silent assumptions become test design choices that are expensive to reverse later.
+
+**Stop and ask if an AC is ambiguous.** If an acceptance criterion in the issue or plan admits more than one reasonable interpretation, do NOT pick silently. Pause, surface the options, and ask. The entire test suite hangs off your interpretation — a wrong guess at this stage cascades through every RED→GREEN cycle that follows.
+
+> Issue AC: "Returns user's recent orders."
+> You: "Recent = last 30 days, last 10 orders, or whatever fits one screen? Each gives a different test design."
+
 ### 2. Tracer Bullet
 
 Write ONE test that confirms ONE thing about the system:
@@ -67,6 +81,17 @@ After all tests pass:
 - Run tests after each refactor step
 
 **Never refactor while RED.** Get to GREEN first.
+
+## Surgical Scope
+
+Even while GREEN, keep changes surgical:
+
+- **Every changed line must trace to the current test.** If a line wasn't required to make the test pass (or to pass an earlier test), it doesn't belong in this change.
+- **Don't "improve" adjacent code.** If you spot dead code, an unrelated bug, or a style issue near the code you're editing, mention it in the PR description — don't fix it in this commit.
+- **Don't remove pre-existing dead code unless asked.** Only remove orphans your own changes created (unused imports, variables, helpers that nothing references after your edit).
+- **Match existing style** even if you'd write it differently. Stylistic refactors belong in their own PR.
+
+The test: imagine reading the diff cold. Could every changed line be traced to "needed for test X"? If not, the surplus lines need to come out.
 
 ## Anti-Pattern: Horizontal Slices
 
@@ -109,6 +134,8 @@ For patterns (dependency injection, SDK wrappers, examples of good vs bad mocks)
 ## Acceptance Checklist
 
 ```
+[ ] Assumptions stated before the first RED (input/output/boundary)
+[ ] AC interpretation confirmed with user (no silent picks on ambiguous ACs)
 [ ] Test describes behavior, not implementation
 [ ] Test uses the public interface
 [ ] Test would survive an internal refactor
@@ -116,5 +143,7 @@ For patterns (dependency injection, SDK wrappers, examples of good vs bad mocks)
 [ ] Co-located next to source file
 [ ] Code is minimal for this test
 [ ] No speculative features added
+[ ] Every changed line traces to the current test (no adjacent improvements)
+[ ] Pre-existing dead code left untouched (mentioned in PR description if noticed)
 [ ] Coverage thresholds pass for the file under test
 ```
