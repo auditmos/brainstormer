@@ -1,7 +1,7 @@
 ---
 id: rerenders/inline-object-prop
 category: rerenders
-detect: ast
+detect: regex
 source: https://www.react.doctor/
 ---
 
@@ -23,30 +23,48 @@ revisited (lift state, pass primitives instead of an object, etc.).
 
 ## Detection
 
-Syntactic. The pattern is an object expression (`{ ... }` not coming from
-an identifier) appearing as the value of a JSX attribute. A regex hits
-most cases, but `ast` is preferred because attribute values nest inside
-arbitrary expressions and ternaries — the AST walker visits every
-`JSXAttribute` whose `value` is a `JSXExpressionContainer` wrapping an
-`ObjectExpression`.
+Syntactic. Match a JSX attribute whose value is a `{{`-opened object
+literal (or a spread of an inline object) on the same line. The double
+brace is the syntactic tell — `prop={{...}}` in JSX is always an inline
+object expression. Apply the regex line-by-line against every scanned
+`*.tsx` / `*.jsx` file; each match is one Finding anchored at the match
+line.
+
+Primary regex (ERE):
+
+```
+[A-Za-z_][A-Za-z0-9_-]*=\{\{[^}]
+```
+
+Plain English: an attribute identifier, an `=`, an opening `{`, then a
+second `{` (object literal), then at least one character that is not a
+closing brace. The trailing class rules out the empty `{{}}` edge case
+(harmless — represents the empty-object literal but commonly used as a
+typed placeholder; surface separately if desired).
+
+Secondary regex (spread of an inline object — much rarer):
+
+```
+\{\.\.\.\{[^}]
+```
 
 Trigger conditions to flag:
 
-- A `JSXAttribute` value whose expression resolves to an `ObjectExpression`
-  not pulled from a stable identifier (module-scope `const`, `useMemo`,
-  `useRef().current`).
-- A spread attribute `{...{...}}` carrying an object literal directly.
-- Inline `style={{ ... }}` is a common offender; flag it unless the
-  containing element does not memoize anything downstream (the validator
-  cannot prove this — surface the finding and let the human decide).
+- Any line matching either regex above.
+- Common offender pattern: `style={{ ... }}` — flag unless the
+  containing element clearly does not memoize anything downstream
+  (the scanner cannot prove this; surface the finding and let the
+  human decide severity).
 
 False-positive exemptions:
 
-- Components whose only consumer is the root `App`/`Layout` and that never
-  memoize. The finding is real but the cost is zero — surface as
+- Components whose only consumer is the root `App` / `Layout` and that
+  never memoize. The finding is real but the cost is zero — surface as
   Optimization severity rather than suppress.
-- Top-of-file `const STYLE = { ... }` patterns where the literal is hoisted
-  out of JSX are not flagged.
+- Top-of-file `const STYLE = { ... }` patterns where the literal is
+  hoisted out of JSX are not flagged because the regex anchors on
+  `<attr>={{` shape inside JSX, not on bare `{ ... }` object
+  declarations.
 
 ## Bad
 

@@ -159,8 +159,14 @@ scan(files: string[], cards: Card[]) → Finding[]
 - `regex` — compile the card's regex from its body's "Detection" section
   and apply it line-by-line. Each match becomes one Finding.
 - `ast` — parse the file as TSX/JSX and walk the AST per the card's rule.
-  Phase 1 ships no `ast` cards; the dispatcher must surface
-  `unsupported detect: ast` if invoked rather than silently skipping.
+  No shipping card uses `ast` as of Phase 3 (the three rerender cards
+  that would benefit from AST analysis ship as `regex` for the
+  syntactic siblings and `llm-judge` for the structural one — see
+  `rerenders/inline-object-prop`, `rerenders/inline-array-prop`,
+  `rerenders/missing-memo-on-list-row`). The strategy stays in the
+  schema for future cards that require true AST work; the dispatcher
+  must surface `unsupported detect: ast` if invoked before an AST
+  implementation lands, rather than silently skipping.
 - `llm-judge` — read each file, prompt the agent itself with the card body
   and the file content, and require a structured response listing each
   occurrence as `{ line, snippet, context }`. The card body's "Detection"

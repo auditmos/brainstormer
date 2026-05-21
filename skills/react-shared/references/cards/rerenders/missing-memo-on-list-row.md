@@ -1,7 +1,7 @@
 ---
 id: rerenders/missing-memo-on-list-row
 category: rerenders
-detect: ast
+detect: llm-judge
 source: https://www.react.doctor/
 ---
 
@@ -26,36 +26,47 @@ least one unstable prop further up the tree.
 
 ## Detection
 
-Structural. Look for:
+Semantic. A regex against `.map(...)` alone produces too many false
+positives (list-of-primitives renders, `Fragment`-wrapped maps,
+maps that don't return JSX, etc.), so this card uses `llm-judge`:
+the agent reads the full file and applies the three-step rule below
+itself, returning each occurrence as `{ line, snippet, context }`.
 
-1. A JSX subtree that maps an array (`items.map(item => <Row .../>)`).
-2. The `Row` component is a function component declared in the same file
-   or imported from a sibling module.
-3. The `Row` component is *not* wrapped in `React.memo` (no `memo(...)`
-   call on the declaration or on the default export).
+Three-step rule the judge must apply for every scanned file:
 
-AST is required: regex against `.map(...)` alone produces too many false
-positives (list-of-primitives renders, `Fragment`-wrapped maps, etc.).
-The walker checks the JSX call target against the file's declarations and
-flags only when the rendered component is itself a function component
-that the parent could memoize.
+1. **Identify candidate maps.** Find every JSX subtree of the shape
+   `<arrayExpr>.map(<cb>)` where the callback returns JSX. Ignore
+   maps whose callback returns a primitive (`items.map(s => s)`) or
+   a bare DOM element with no child component (`items.map(name =>
+   <li>{name}</li>`).
+2. **Resolve the rendered component.** The map callback returns a JSX
+   element whose tag identifier must resolve to a function-component
+   declaration the auditor controls (declared in the same file, or
+   imported from a sibling project module). Ignore third-party
+   components — the auditor cannot rewrap them.
+3. **Check for `React.memo` wrapping.** Flag the occurrence if and
+   only if the resolved component declaration is *not* wrapped in
+   `memo(...)` and not exported via `export default memo(Component)`.
 
-Trigger conditions to flag:
+For each flagged occurrence, report:
 
-- A `CallExpression` on an array (e.g. `items.map(...)`) appearing inside
-  a `JSXExpressionContainer`.
-- The map callback returns a JSX element whose tag identifier resolves to
-  a function-component declaration the auditor controls.
-- That declaration is not wrapped in `React.memo` and not exported via
-  `export default memo(Row)`.
+- `line` — the line carrying the `.map(` call.
+- `snippet` — the offending line, trimmed.
+- `context` — two lines before, the offending line, two lines after.
 
-False-positive exemptions:
+False-positive exemptions the judge applies before reporting:
 
 - Rows that render only primitives (`<li>{name}</li>`) and have no
   internal state, hooks, or further descendants. The render cost is
   rounding-error.
 - Lists with fewer than ~10 items at all times (small lookup menus,
-  fixed-arity tab strips). Surface at Optimization severity.
+  fixed-arity tab strips). Still report but mark severity as
+  Optimization rather than Friction.
+
+Cache: per the Code Scanner contract, llm-judge calls are cached per
+`(file_hash, rule_id)` within a single scan run; the judge is invoked
+at most once per file for this rule even if the file is re-considered
+during dependency analysis.
 
 ## Bad
 

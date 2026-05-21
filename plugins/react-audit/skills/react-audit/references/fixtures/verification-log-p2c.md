@@ -37,10 +37,20 @@ The four canonical rerender anti-pattern cards live under
 
 | # | Rule id                                | Detect     | Source                                        |
 | - | -------------------------------------- | ---------- | --------------------------------------------- |
-| 1 | `rerenders/inline-object-prop`         | ast        | https://www.react.doctor/                     |
-| 2 | `rerenders/inline-array-prop`          | ast        | https://www.react.doctor/                     |
-| 3 | `rerenders/missing-memo-on-list-row`   | ast        | https://www.react.doctor/                     |
+| 1 | `rerenders/inline-object-prop`         | regex      | https://www.react.doctor/                     |
+| 2 | `rerenders/inline-array-prop`          | regex      | https://www.react.doctor/                     |
+| 3 | `rerenders/missing-memo-on-list-row`   | llm-judge  | https://www.react.doctor/                     |
 | 4 | `rerenders/context-too-broad`          | llm-judge  | https://www.react.doctor/                     |
+
+Note: cards #1–#3 originally shipped with `detect: ast` (Phase 2c, commit
+`4cad5f8`). They were converted to runnable detect strategies (#1 / #2
+to `regex` per their own card body's "regex hits most cases" guidance,
+#3 to `llm-judge` per its own "AST is required; regex alone produces too
+many false positives" guidance) so the Code Scanner does not need an
+AST implementation to handle them. The `ast` strategy remains in the
+schema for future cards. This conversion is a runtime fix, not a
+detection-quality regression — the regex patterns hit the same JSX
+attribute shapes the AST walker would have flagged.
 
 Each card body cites both the react-doctor catalog (host `www.react.doctor`
 required by `validate-rule-cards.sh` body-host check) and the Million

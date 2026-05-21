@@ -1,7 +1,7 @@
 ---
 id: rerenders/inline-array-prop
 category: rerenders
-detect: ast
+detect: regex
 source: https://www.react.doctor/
 ---
 
@@ -24,28 +24,44 @@ pass the source data, let the child do its own derivation).
 
 ## Detection
 
-Syntactic. JSX attribute value resolves to an `ArrayExpression`. Like the
-object variant, AST is preferred over regex because expressions nest
-inside ternaries and conditional renders.
+Syntactic. Match a JSX attribute whose value is a `{[`-opened array
+literal on the same line. The opening `{[` is the syntactic tell —
+`prop={[...]}` in JSX is always an inline array expression. Apply the
+regex line-by-line against every scanned `*.tsx` / `*.jsx` file; each
+match is one Finding anchored at the match line.
+
+Primary regex (ERE):
+
+```
+[A-Za-z_][A-Za-z0-9_-]*=\{\[
+```
+
+Plain English: an attribute identifier, an `=`, an opening `{`, then a
+`[` opening an array literal. Empty-array literals (`prop={[]}`) match
+naturally — and are the most common silent offender (default-prop typing
+hack); a `const EMPTY: never[] = []` hoisted to module scope is the
+canonical fix.
+
+Secondary regex (spread of an inline array — rarer):
+
+```
+\{\.\.\.\{[^}]*\[
+```
 
 Trigger conditions to flag:
 
-- `JSXAttribute` whose value is a `JSXExpressionContainer` wrapping an
-  `ArrayExpression`.
-- Spread props that include a freshly-built array (`{...{items: [...]}}`).
-- Array-typed defaults written inline as `prop={[]}` to satisfy
-  optional-prop typing — the most common silent offender. A stable
-  `const EMPTY: never[] = []` at module scope is the fix.
+- Any line matching either regex above.
 
 False-positive exemptions:
 
 - Render-scoped derivations that *must* be inline because they depend on
-  per-render values (`items.filter(x => x.id === selectedId)`). The
-  finding is still surfaced but at Optimization severity — the human can
-  decide whether to memoize or restructure.
-- Calls into a stable helper that returns an array of stable references
-  (`getEmptyItems()` returning a module-level constant) are not flagged
-  if the AST can resolve the call target to a stable source.
+  per-render values (`items.filter(x => x.id === selectedId)`) — the
+  regex won't fire on these because the value is an identifier/call
+  expression, not a `[` literal. If the developer writes
+  `prop={items.filter(...)}`, no match. The regex only flags literal
+  brackets.
+- Calls into stable helpers (`prop={getEmptyItems()}`) are likewise
+  identifier-shaped and do not match.
 
 ## Bad
 
