@@ -118,6 +118,8 @@ Issue Manager evolves from one-issue-per-finding to grouped emission: all findin
 
 ## Phase 3: Re-run lifecycle — full Issue Manager
 
+**Status**: ✅ shipped — issue #6 — TDD vertical-slice walkthrough
+
 **User stories**: 9, 10, 22
 
 ### What to build
@@ -132,12 +134,13 @@ No skill ever auto-suggests fixes or patches in issue bodies; findings remain re
 
 ### Acceptance criteria
 
-- [ ] Two consecutive runs on identical fixtures produce no duplicate issues; the original issue body is updated in place on the second run
-- [ ] A run with fewer findings than the previous run closes the resolved issues with a comment
-- [ ] A run that reintroduces a previously-closed finding creates a new issue with a backlink to the closed one
-- [ ] Human comments on existing issues survive the body update on subsequent runs
-- [ ] No issue body contains a "suggested fix" or patch block
-- [ ] Label-collision test confirms two simultaneous runs do not both create an issue for the same label
+- [x] Two consecutive runs on identical fixtures produce no duplicate issues; the original issue body is updated in place on the second run
+- [x] A run with fewer findings than the previous run closes the resolved issues with a comment
+- [x] A run that reintroduces a previously-closed finding creates a new issue with a backlink to the closed one
+- [x] Human comments on existing issues survive the body update on subsequent runs
+- [x] No issue body contains a "suggested fix" or patch block
+- [x] Label-collision test confirms two simultaneous runs do not both create an issue for the same label
+- [x] Closed issues are never reopened by the skill under any flow
 
 ---
 

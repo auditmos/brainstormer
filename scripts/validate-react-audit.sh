@@ -369,6 +369,144 @@ else
   fi
 fi
 
+# 4d. Phase 3 — re-run lifecycle (Issue Manager full validation surface) ---
+#    Assertions grow one AC at a time alongside SKILL.md changes per the TDD
+#    vertical-slice rule (see /tdd skill). AC #1 ships first; AC #2..#7 land
+#    in subsequent slices.
+
+P3_LOG="$FIXTURES_DIR/verification-log-p3.md"
+
+if [[ -f "$SKILL_FILE" ]]; then
+  issue_mgr_section_p3=$(awk '
+    /^## Issue Manager$/ { in_section = 1; next }
+    in_section && /^## / { exit }
+    in_section { print }
+  ' "$SKILL_FILE")
+
+  # AC #1 — lookup-by-label contract symbol present
+  if ! grep -qF 'findIssueByLabel(' <<< "$issue_mgr_section_p3"; then
+    errors+=("SKILL.md: Issue Manager section missing 'findIssueByLabel(' contract symbol — Phase 3 AC #1 requires label-based lookup before issue creation")
+  fi
+  # AC #1 — in-place rewrite documented
+  if ! grep -qiE 'in[- ]place|update.*in place|rewrite.*body|body.*rewritten' <<< "$issue_mgr_section_p3"; then
+    errors+=("SKILL.md: Issue Manager section does not document in-place body update — Phase 3 AC #1 requires the second-run path to rewrite the existing issue body")
+  fi
+  # AC #1 — sentinel markers documented (managed body region is the dedup mechanism)
+  if ! grep -qF 'react-audit:managed:start' <<< "$issue_mgr_section_p3"; then
+    errors+=("SKILL.md: Issue Manager section missing 'react-audit:managed:start' sentinel marker — Phase 3 AC #1 dedup mechanism")
+  fi
+  if ! grep -qF 'react-audit:managed:end' <<< "$issue_mgr_section_p3"; then
+    errors+=("SKILL.md: Issue Manager section missing 'react-audit:managed:end' sentinel marker — Phase 3 AC #1 dedup mechanism")
+  fi
+
+  # AC #2 — close-with-dated-resolution-comment contract
+  if ! grep -qF 'closeWithResolution(' <<< "$issue_mgr_section_p3"; then
+    errors+=("SKILL.md: Issue Manager section missing 'closeWithResolution(' contract symbol — Phase 3 AC #2 requires a dedicated close-with-comment path")
+  fi
+  if ! grep -qiE 'resolution date|dated resolution|resolved <[^>]*date|YYYY-MM-DD' <<< "$issue_mgr_section_p3"; then
+    errors+=("SKILL.md: Issue Manager section does not state that the close comment carries a date — Phase 3 AC #2 requires the resolution comment to be dated")
+  fi
+  if ! grep -qE 'gh issue close|gh issue comment' <<< "$issue_mgr_section_p3"; then
+    errors+=("SKILL.md: Issue Manager section does not show the 'gh issue close' / 'gh issue comment' shell-out — Phase 3 AC #2 requires the close path to use the gh CLI explicitly")
+  fi
+
+  # AC #3 — regression path: createRegressionIssue + backlink to closed issue
+  if ! grep -qF 'createRegressionIssue(' <<< "$issue_mgr_section_p3"; then
+    errors+=("SKILL.md: Issue Manager section missing 'createRegressionIssue(' contract symbol — Phase 3 AC #3 requires a dedicated regression path")
+  fi
+  if ! grep -qiE 'backlink|Regression of #|previously[- ]closed' <<< "$issue_mgr_section_p3"; then
+    errors+=("SKILL.md: Issue Manager section does not document the backlink-to-closed-issue requirement — Phase 3 AC #3")
+  fi
+  # AC #3 — explicit no-reopen statement for the regression path
+  if ! grep -qiE 'never reopen|do not reopen|not reopened' <<< "$issue_mgr_section_p3"; then
+    errors+=("SKILL.md: Issue Manager section does not state that the regression path never reopens the closed issue — Phase 3 AC #3")
+  fi
+
+  # AC #4 — human comments survive body updates (gh issue edit does not touch comments)
+  if ! grep -qiE 'human comments? (preserved|survive|untouched)|comments? (are )?never (touched|edited|rewritten)' <<< "$issue_mgr_section_p3"; then
+    errors+=("SKILL.md: Issue Manager section does not state that human comments survive the in-place body update — Phase 3 AC #4")
+  fi
+  # AC #4 — gh issue edit --body-file mechanism documented (only the body is rewritten; comments are separate API entities)
+  if ! grep -qE 'gh issue edit .*--body-file|body-file' <<< "$issue_mgr_section_p3"; then
+    errors+=("SKILL.md: Issue Manager section does not document the 'gh issue edit --body-file' mechanism — Phase 3 AC #4 relies on the fact that only the body (not comments) is rewritten")
+  fi
+
+  # AC #5 — read-only-findings invariant: no suggested fix / patch block
+  if ! grep -qiE 'no (suggested fix|patch block|auto[- ]?fix)|never.*suggested fix|read[- ]only finding' <<< "$issue_mgr_section_p3"; then
+    errors+=("SKILL.md: Issue Manager section does not state the no-suggested-fix / read-only-finding invariant — Phase 3 AC #5")
+  fi
+
+  # AC #6 — label-collision / concurrent-run protocol
+  if ! grep -qiE 'label[- ]collision|concurrent|simultaneous|race' <<< "$issue_mgr_section_p3"; then
+    errors+=("SKILL.md: Issue Manager section does not document a label-collision / concurrent-run protocol — Phase 3 AC #6")
+  fi
+  if ! grep -qiE 'post[- ]create reconciliation|after .*create|reconcil|auto[- ]closing' <<< "$issue_mgr_section_p3"; then
+    errors+=("SKILL.md: Issue Manager section does not document the post-create reconciliation step for the collision protocol — Phase 3 AC #6")
+  fi
+  if ! grep -qiE 'at[- ]most[- ]one|only one open|single open issue' <<< "$issue_mgr_section_p3"; then
+    errors+=("SKILL.md: Issue Manager section does not state the 'at most one open issue per label' invariant — Phase 3 AC #6")
+  fi
+
+  # AC #7 — never-reopen invariant: must be a top-level statement scoped to
+  # "any flow" / "any path", not just a regression-section aside. The wording
+  # "Phase 3 AC #7" must accompany the statement so the invariant is
+  # discoverable and tied to its issue.
+  if ! grep -qiE 'AC #7|AC#7|never-reopen invariant' <<< "$issue_mgr_section_p3"; then
+    errors+=("SKILL.md: Issue Manager section does not anchor the never-reopen invariant with an 'AC #7' / 'never-reopen invariant' label — Phase 3 AC #7 requires the invariant to be discoverable as its own statement, not just a regression-section aside")
+  fi
+  if ! grep -qiE 'under any flow|under any path|on any path|under any (re-?run|circumstance)' <<< "$issue_mgr_section_p3"; then
+    errors+=("SKILL.md: Issue Manager section does not state the never-reopen invariant 'under any flow / any path' — Phase 3 AC #7 requires the invariant to be scoped beyond a single dispatch path")
+  fi
+fi
+
+if [[ ! -f "$P3_LOG" ]]; then
+  errors+=("missing P3 verification log: ${P3_LOG#"$REPO_ROOT/"}")
+else
+  # AC #1 — dedup-in-place walkthrough
+  if ! grep -qiE 'in[- ]place|no duplicate|same issue number|reused' "$P3_LOG"; then
+    errors+=("verification-log-p3.md: missing in-place body update / dedup evidence (AC #1)")
+  fi
+  if ! grep -qF 'react-audit:managed:start' "$P3_LOG"; then
+    errors+=("verification-log-p3.md: missing sentinel marker reference (AC #1)")
+  fi
+
+  # AC #2 — close-with-dated-resolution walkthrough
+  if ! grep -qiE 'resolution date|closed with.*comment|dated resolution|resolved [0-9]{4}-[0-9]{2}-[0-9]{2}' "$P3_LOG"; then
+    errors+=("verification-log-p3.md: missing close-with-dated-resolution evidence (AC #2)")
+  fi
+  if ! grep -qE 'gh issue close|gh issue comment' "$P3_LOG"; then
+    errors+=("verification-log-p3.md: missing 'gh issue close' / 'gh issue comment' invocation in walkthrough (AC #2)")
+  fi
+
+  # AC #3 — regression walkthrough
+  if ! grep -qiE 'regression|resurface|reintroduce' "$P3_LOG"; then
+    errors+=("verification-log-p3.md: missing regression / resurface evidence (AC #3)")
+  fi
+  if ! grep -qiE 'backlink|Regression of #' "$P3_LOG"; then
+    errors+=("verification-log-p3.md: missing backlink-to-closed-issue evidence (AC #3)")
+  fi
+
+  # AC #4 — human comments preserved walkthrough
+  if ! grep -qiE 'human comments? (preserved|survive)' "$P3_LOG"; then
+    errors+=("verification-log-p3.md: missing human-comments-survive evidence (AC #4)")
+  fi
+
+  # AC #5 — no-suggested-fix walkthrough
+  if ! grep -qiE 'no .*(suggested fix|patch block|auto[- ]?fix)' "$P3_LOG"; then
+    errors+=("verification-log-p3.md: missing no-suggested-fix evidence (AC #5)")
+  fi
+
+  # AC #6 — label-collision walkthrough
+  if ! grep -qiE 'label[- ]collision|concurrent|simultaneous' "$P3_LOG"; then
+    errors+=("verification-log-p3.md: missing label-collision evidence (AC #6)")
+  fi
+
+  # AC #7 — never-reopen walkthrough
+  if ! grep -qiE 'never reopen|closed issues? .*not.*reopen|gh issue reopen.*not' "$P3_LOG"; then
+    errors+=("verification-log-p3.md: missing never-reopen evidence (AC #7)")
+  fi
+fi
+
 # 5. gh-only constraint guard (slice 7) -------------------------------------
 #    Only flag forbidden patterns inside fenced code blocks. Prose mentions
 #    (e.g. "no `curl`, no `WebFetch`") are descriptive and stay allowed.

@@ -1,9 +1,9 @@
 ---
 name: react-audit
-description: Audit a React/TSX repository for React anti-patterns by loading rule cards from the brainstormer card library, scanning source files via each card's declared detect strategy, and filing one grouped GitHub issue per `(skill, rule_id)` via the `gh` CLI. Phase 2c collapses findings — every occurrence of the same rule lands in a single issue body with per-occurrence `file:line`, ~5 lines of context, and per-finding severity — and adds the four canonical rerender cards from react-doctor / Million on top of Phase 2a's 11 effects cards (15 MVP total). Phase 2b's smart-scan front step (`git ls-files`, canonical exclusion list, threshold prompt at `SMART_SCAN_THRESHOLD=50`) stays unchanged. Manual invocation only — no hooks. Triggers on `/react-audit`, "audit this repo for react anti-patterns", "scan for useEffect or re-render anti-patterns", "run a react audit". Skip design questions, scaffolding, or audits of non-React frameworks (Vue, Svelte, Solid).
+description: Audit a React/TSX repository for React anti-patterns by loading rule cards from the brainstormer card library, scanning via each card's declared detect strategy, and filing one grouped GitHub issue per `(skill, rule_id)` via the `gh` CLI. Phase 3 adds the full re-run lifecycle: `findIssueByLabel` lookup, in-place body rewrite bounded by `react-audit:managed:start/end` sentinels (human comments survive), close-with-dated-resolution on emptied findings, regression-with-backlink on resurfaced findings, label-collision protocol under concurrent runs, never-reopen invariant. Phase 2c grouped body (15 MVP cards, per-occurrence severity, `<details>` collapsibles) and Phase 2b smart scan (`SMART_SCAN_THRESHOLD=50`) unchanged. Manual invocation only — no hooks. Triggers on `/react-audit`, "audit this repo for react anti-patterns", "run a react audit". Skip design questions, scaffolding, audits of non-React frameworks (Vue, Svelte, Solid).
 ---
 
-# React Audit — Phase 2c (rerender cards + grouped emission)
+# React Audit — Phase 3 (re-run lifecycle)
 
 Manual-invocation skill that loads every shipping card from the
 brainstormer card library, scans the current repository for occurrences of
@@ -245,6 +245,258 @@ never recomputes severity.
 - Returns the URL printed by `gh issue create` on success. On `gh`
   failure, surface the stderr verbatim — do not retry (avoids creating a
   duplicate grouped issue on transient failure).
+
+### Re-run lifecycle (Phase 3)
+
+Phase 3 turns `upsertGroupedIssue` into a dispatch on `findIssueByLabel`
+results so a re-run never duplicates a grouped issue. Each AC below
+layers one new row onto the dispatch matrix. Earlier ACs remain
+unchanged.
+
+#### AC #1 — Dedup + in-place body update
+
+Before any `gh issue create`, the skill first checks for an existing
+labeled issue:
+
+```
+findIssueByLabel(repo: string, label: string) → IssueRef | null
+```
+
+`IssueRef` shape:
+
+```
+{
+  number: number,    // gh issue number
+  state:  "open" | "closed",
+  body:   string,    // full issue body as currently stored on GitHub
+  url:    string,    // canonical issue URL
+}
+```
+
+Implementation: `gh issue list --label <label> --state all
+--json number,state,body,url --limit 5`. The five-result limit keeps the
+call cheap; only the most-recently-updated issue per label matters.
+Returns `null` when no issue carries the label.
+
+##### Skill-managed body region
+
+Every grouped issue body produced by Phase 3 is bounded by sentinel
+HTML-comment markers:
+
+```
+<!-- react-audit:managed:start -->
+...Phase 2c grouped body (rule card + severity summary + occurrences)...
+<!-- react-audit:managed:end -->
+```
+
+On a re-run, the rewrite replaces **only** the byte range between the
+markers. The Phase 2c body shape (rule card embedding → severity summary
+line → occurrence list) renders identically inside the sentinels — the
+markers add no visible noise (HTML comments don't render on
+github.com), they just delimit the skill-managed region. A body missing
+the start or end sentinel is treated as never-managed-by-this-skill and
+the skill falls through to the create path (logged as
+`lifecycle: orphan-body, falling through to create`) rather than risk
+overwriting reviewer prose.
+
+##### Dispatch matrix (AC #1 rows only)
+
+For each grouped emission with label `react-audit:<rule_id>`:
+
+| `findings`  | `findIssueByLabel(...)`    | Path                | Action |
+| ----------- | -------------------------- | ------------------- | ------ |
+| non-empty   | `null`                     | **create**          | `gh issue create` exactly as Phase 2c, with the body wrapped in `react-audit:managed:start` / `:end` sentinels. |
+| non-empty   | `{ state: "open", ... }`   | **update-in-place** | `gh issue edit <n> --body-file <tmpfile>` where the new body is the existing body with the byte range between `react-audit:managed:start` / `:end` markers replaced by the fresh Phase 2c grouped body. Issue number is reused; no new issue is created. |
+
+Subsequent rows (close-with-resolution, regression, never-reopen,
+label-collision) arrive with later ACs in this same section.
+
+#### AC #2 — Close resolved issues with a dated comment
+
+When a rule's findings list goes from non-empty (run N) to empty (run
+N+1), the existing open issue under that label is **resolved**. The skill
+must mark the resolution explicitly rather than silently closing.
+
+```
+closeWithResolution(repo: string, number: number, date: string) → void
+```
+
+Implementation: two shell-outs, in order:
+
+```
+gh issue comment <number> --body "Resolved <YYYY-MM-DD>: no findings remain on rerun."
+gh issue close   <number>
+```
+
+The date is the calling skill's wallclock date in `YYYY-MM-DD` form
+(today: `2026-05-21`). The dated resolution comment is mandatory — a
+silent `gh issue close` would lose the audit trail that the closure was
+skill-driven and dated. The comment lives outside the sentinel-bounded
+managed body region; it is a normal GitHub issue comment, not part of
+the body, so it survives future body rewrites trivially.
+
+##### Dispatch matrix (AC #2 row added)
+
+| `findings`  | `findIssueByLabel(...)`    | Path                          | Action |
+| ----------- | -------------------------- | ----------------------------- | ------ |
+| empty       | `{ state: "open", ... }`   | **close-with-resolution**     | `closeWithResolution(...)` — see above. |
+
+#### AC #3 — Regression creates new issue with backlink
+
+When a finding resurfaces under a label whose previous issue was already
+closed (the rule was once resolved, now broken again), the skill creates
+a **new** issue with a backlink to the most recently closed predecessor.
+The closed issue is never reopened.
+
+```
+createRegressionIssue(repo: string, label: string, findings: Finding[], closedRef: IssueRef) → URL
+```
+
+Implementation: a single `gh issue create` call carrying the standard
+Phase 2c grouped body with a **backlink header** prepended inside the
+sentinel-bounded managed region:
+
+```
+<!-- react-audit:managed:start -->
+> Regression of #<closedRef.number> (<closedRef.url>) — previously
+> closed; this finding has resurfaced and is filed as a new issue per
+> Phase 3 lifecycle. The closed issue is not reopened.
+
+...standard Phase 2c grouped body...
+<!-- react-audit:managed:end -->
+```
+
+The backlink header is the first line(s) of the managed region so a
+reviewer skimming the new issue's body sees the historical link without
+scrolling. Inside the matrix, the closed issue is treated as historical
+evidence — `findIssueByLabel` still returns the closed `IssueRef`, but
+the dispatch path branches on `state == "closed"` to `createRegressionIssue`
+rather than the create-from-scratch path. The closed issue itself is
+never reopened; the regression path is `gh issue create` only, never
+`gh issue reopen`.
+
+##### Dispatch matrix (AC #3 row added)
+
+| `findings`  | `findIssueByLabel(...)`    | Path             | Action |
+| ----------- | -------------------------- | ---------------- | ------ |
+| non-empty   | `{ state: "closed", ... }` | **regression**   | `createRegressionIssue(...)` — single `gh issue create` with backlink header inside the managed region. Closed issue is **never reopened**. |
+
+#### AC #4 — Human comments survive body update
+
+GitHub issue comments are a separate API entity from the issue body —
+`gh issue edit --body-file` only rewrites the body and never touches
+comments. The Phase 3 update-in-place path therefore preserves human
+comments **structurally** by virtue of using `gh issue edit` (not
+`gh issue delete` + recreate). The skill also preserves any prose the
+reviewer added directly inside the issue body, **provided** the prose
+lives outside the sentinel-bounded managed region.
+
+Three preservation guarantees, in order from strongest to weakest:
+
+1. **GitHub-issue comments are never touched.** They are not part of
+   the body — `gh issue edit --body-file` cannot reach them. Every
+   reviewer thread on every issue this skill manages survives every
+   re-run forever.
+2. **Body prose outside `react-audit:managed:start` / `:end` is never
+   touched.** The byte-range rewrite only replaces what is between the
+   sentinels. Notes the reviewer types above the start marker or below
+   the end marker survive identically.
+3. **Body prose inside the managed region is overwritten.** This is the
+   point of the sentinels — the managed region is owned by the skill
+   and gets rewritten on every re-run. Reviewers who want their notes
+   to survive must place them outside the sentinel pair.
+
+Skills that emit grouped issues with the sentinel pair always render
+the start sentinel at the very top of the body and the end sentinel at
+the very bottom. A reviewer adding context underneath an issue's
+sentinel-bounded skill block keeps that prose by placing it after the
+`react-audit:managed:end` marker; the skill's rewrite path leaves
+everything after the end marker byte-for-byte identical.
+
+#### AC #5 — Findings are read-only (no suggested fix)
+
+Issue bodies are read-only descriptions of findings. The skill **never**
+emits a "suggested fix", "patch block", `Auto-fix:` header, or any
+fenced ` ```diff ` block originating from itself in any body it creates
+or updates. This applies on all three write paths (create, update-in-
+place, regression). The skill's job ends at surfacing the finding with
+its rule card and `file:line` context — fixes are authored by the
+reviewer.
+
+The reasoning is twofold:
+
+1. **Authoring control.** Per PRD #1 user story 22, the user retains
+   authoring control over fixes. An auto-suggested patch is editorial
+   pressure that goes beyond surfacing the finding.
+2. **No drift.** A skill-emitted "suggested fix" would itself need a
+   lifecycle (kept fresh on re-runs, invalidated when the rule changes,
+   etc.). Excluding it from the body avoids that entire class of
+   maintenance.
+
+Reviewers who want to record a proposed fix do so in a regular issue
+comment — those comments survive re-runs per AC #4.
+
+Mechanically, the validator scans every issue body produced by the
+skill for the forbidden tokens `Suggested fix:`, `Auto-fix:`, and
+fenced ` ```diff ` blocks; appearance of any of these in a skill-
+emitted body is a SKILL.md bug, not a runtime concern.
+
+#### AC #6 — Label-collision protocol (concurrent runs)
+
+`findIssueByLabel` is racy by construction — between the lookup and the
+subsequent `gh issue create`, a sibling run can land its own issue under
+the same label. The skill defends against this with a deterministic
+two-step protocol that keeps **at-most-one open issue per label**:
+
+1. **Lookup with refresh.** Every dispatch decision starts with a
+   fresh `gh issue list --label <label> --state all
+   --json number,state,body,url --limit 5` so a sibling run's create
+   that already landed is visible. No long-lived cache.
+2. **Post-create reconciliation.** Immediately after `gh issue create`
+   returns the new issue's URL on the **create** path (and the
+   **regression** path), the skill re-runs `findIssueByLabel`. If the
+   result now lists more than one open issue under the label (a
+   sibling run also created one in the race window), the skill **auto-
+   closes its own just-created issue** with the comment
+   `Duplicate of #<other.number>; created concurrently — auto-closing.`
+   and surfaces the other issue's URL as the canonical return value.
+   The sibling run, doing the same check, sees its own newer issue and
+   keeps it. The protocol picks the lower-numbered open issue as
+   canonical (it landed first); ties never occur because GitHub issue
+   numbers are monotonic.
+
+The protocol guarantees at-most-one open issue per `(skill, rule_id)`
+label without requiring a server-side lock. The trade-off is that on a
+collision the losing run closes its just-created issue (visible as a
+single transient extra issue in `gh issue list --state closed`); the
+winning run is unchanged.
+
+The auto-close comment is itself a normal issue comment and lives
+outside the managed body region — AC #4's preservation guarantees
+apply to it.
+
+#### AC #7 — Never-reopen invariant (under any flow)
+
+**Closed issues are never reopened by this skill, under any flow.**
+The skill never invokes `gh issue reopen` on any code path: not the
+create path, not the update-in-place path, not the regression path,
+not the close-with-resolution path, not the collision-protocol auto-
+close path, not on any future re-run. A closed issue is treated as
+historical evidence — the regression path reads it via
+`findIssueByLabel` to build a backlink, but only `gh issue create`
+ever runs.
+
+If a human reviewer manually reopens a closed issue on github.com (a
+flow this skill does not control), the next `/react-audit` run sees an
+`open` state on the lookup and routes to the update-in-place path per
+AC #1 — no special-case handling required. The invariant is scoped to
+the skill's own writes; reviewer-driven reopens are outside its
+purview.
+
+Mechanically, the validator forbids `gh issue reopen` anywhere in the
+skill's documented contract. This is the strongest form of the
+invariant: the skill cannot reopen a closed issue because the
+mechanism to do so is not part of its vocabulary.
 
 ## Smart Scan
 
