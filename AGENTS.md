@@ -36,3 +36,13 @@ Professional, direct, thorough. This is a consulting engagement — treat every 
 ## Plugin Structure
 
 This repo is both a direct workspace and a distributable plugin. Skills live in `skills/` with mirrored copies in `plugins/` for marketplace distribution. See `llms.txt` for a machine-readable index of all skills and references.
+
+## Commit validation
+
+`skills/` must stay byte-synced with the `plugins/` mirror, `.claude-plugin/marketplace.json`, and `llms.txt`. Four validators (`scripts/validate-*.sh`) enforce this and run three ways:
+
+- **Git-native (every clone — do this first):** run `git config core.hooksPath .githooks` once per clone. `.githooks/pre-commit` then runs all four validators and blocks the commit on failure. This is the source of truth and the only agent-independent layer.
+- **Agent PreToolUse gate:** `.claude/settings.json` (Claude Code) and `.codex/hooks.json` (Codex) register `scripts/hook-precommit-sync.sh`, which runs the same validators before an agent's `git commit` and blocks it with exit code 2 on drift, so the agent sees the failure in-transcript. Codex additionally requires `[features].codex_hooks = true` in `~/.codex/config.toml` — a per-machine setting, not tracked in this repo.
+- **CI:** the same checks run on every PR.
+
+Override intentionally with `git commit --no-verify`.
