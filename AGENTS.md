@@ -1,6 +1,9 @@
-# Brainstormer — Planning Workspace
+# Brainstormer
 
-This is a **planning-only workspace**. There is no application source code here — only skills, plans, and deliverables for taking a client from rough idea to dev-ready output.
+This repo is **two things at once**, and how you work depends on which you're touching:
+
+- A **consulting workspace** — you run client engagements here with the planning skills; the deliverables are PRDs (GitHub issues), phased plans (`./plans/`), and dev-ready issues (see Workflow below).
+- The **source code of the `brainstormer` plugin** — the skills, rule cards, shell validators, git hooks, and CI that ship to the plugin marketplace. The Markdown here **is** the product's source code, so apply real engineering rigor to it: edits under `skills/**` must be mirrored to `plugins/**` and reflected in `llms.txt` and `.claude-plugin/marketplace.json` (see Plugin Structure and Commit validation below).
 
 ## Workflow
 
@@ -24,10 +27,19 @@ Additional skills:
 
 ## Session Rules
 
-- Exhaust one topic fully before moving to the next. No compound questions.
-- Restate decisions back to the client before finalizing.
+These bind every session in the repo:
+
 - Technology choices appear in deliverables **only** when the client explicitly states them.
 - GitHub is required — PRDs are submitted as issues, plans go to `./plans/`.
+
+<important if="you are running a client discovery or PRD interview (/ask, /blueprint, /brainstorm)">
+### Client interview discipline
+
+- Exhaust one topic fully before moving to the next. Ask questions one at a time — no compound or batched questions, even when they feel tightly coupled; the answer to one often reshapes the next.
+- Restate decisions back to the client before finalizing.
+
+Non-interview sessions (skill development, audits, maintenance) are free to batch clarifying questions — e.g. AskUserQuestion with several at once. The interview skills enforce these rules in more detail.
+</important>
 
 ## Tone
 
