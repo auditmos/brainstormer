@@ -1,12 +1,4 @@
 {
-	"extraKnownMarketplaces": {
-		"brainstormer": {
-			"source": {
-				"source": "directory",
-				"path": "."
-			}
-		}
-	},
 	"hooks": {
 		"PreToolUse": [
 			{
