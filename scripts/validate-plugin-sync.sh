@@ -148,6 +148,43 @@ if [[ -f "$llms_txt" ]]; then
       errors+=("LLMS.TXT:    $rel_path missing from llms.txt")
     fi
   done < <(find "$REPO_ROOT/skills" -path '*/references/*' -type f -print0)
+
+  # -------------------------------------------------------------------------
+  # Version-marker currency: the presence checks above prove each SKILL.md is
+  # LINKED from llms.txt, but not that the entry TEXT is current. The observed
+  # drift (skill shipped Phase 3 while its llms.txt line still said Phase 2b)
+  # slipped through with a green checkbox. Rule: every `Phase N` token in a
+  # skill's frontmatter description must also appear in that skill's llms.txt
+  # entry. Curated summaries stay hand-written; only the version marker is
+  # mechanically pinned. Low false-positive — only react-audit ships a Phase
+  # marker today (verified 2026-07-09).
+  # -------------------------------------------------------------------------
+  for skill_dir in "$REPO_ROOT"/skills/*/; do
+    skill_name=$(basename "$skill_dir")
+    is_shared_refs "$skill_dir" && continue
+    skill_link="skills/$skill_name/SKILL.md"
+    llms_line=$(grep -F "($skill_link)" "$llms_txt" || true)
+    [[ -z "$llms_line" ]] && continue   # missing-entry already reported above
+    desc=$(sed -n 's/^description: *//p' "$skill_dir/SKILL.md" | head -1)
+    while IFS= read -r phase; do
+      [[ -z "$phase" ]] && continue
+      if ! grep -qF "$phase" <<<"$llms_line"; then
+        errors+=("LLMS.TXT:    $skill_link description says \"$phase\" but its llms.txt entry does not (stale version marker)")
+      fi
+    done < <(grep -oE 'Phase [0-9]+[a-z]?' <<<"$desc" | sort -u)
+  done
+
+  # -------------------------------------------------------------------------
+  # Dead-link guard: the complement of the presence checks — every skills/
+  # link target written into llms.txt must resolve to a real file, so a
+  # rename or typo can't leave a phantom entry pointing at nothing.
+  # -------------------------------------------------------------------------
+  while IFS= read -r target; do
+    [[ -z "$target" ]] && continue
+    if [[ ! -e "$REPO_ROOT/$target" ]]; then
+      errors+=("LLMS.TXT:    dead link -> $target (referenced in llms.txt, file missing)")
+    fi
+  done < <(grep -oE '\]\(skills/[^)]+\)' "$llms_txt" | sed -E 's/^\]\(//; s/\)$//' | sort -u)
 fi
 
 if [[ ${#errors[@]} -gt 0 ]]; then
