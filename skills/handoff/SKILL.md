@@ -1,5 +1,6 @@
 ---
 name: handoff
+version: 2.0.0
 description: Capture the entire current chat as a structured handoff document the user can paste into Codex, Cursor, or another IDE-based AI coding agent. Triggers on /handoff, /export-context, /dump, "package this for codex", "send this to cursor", "make a handoff doc", "i wanna take this to another model", or similar phrasing indicating intent to continue work elsewhere. Produces lossless distillation — every meaningful detail survives, with discarded approaches explicitly labeled by reason so the next model does not re-suggest rejected paths.
 ---
 

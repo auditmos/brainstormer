@@ -1,5 +1,6 @@
 ---
 name: blueprint
+version: 1.1.0
 description: Create a Product Requirements Document through structured interview. Use when the user wants to write a PRD, define requirements, or plan a new feature.
 ---
 

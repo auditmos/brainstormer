@@ -1,5 +1,6 @@
 ---
 name: llm-council
+version: 1.0.1
 description: "Run a question through 5 AI advisors who analyze independently, peer-review anonymously, then synthesize a verdict. Invoke for strategic decisions with genuine uncertainty where multiple perspectives add value."
 ---
 

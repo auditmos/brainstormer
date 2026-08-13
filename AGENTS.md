@@ -51,9 +51,9 @@ This repo is both a direct workspace and a distributable plugin. Skills live in 
 
 ## Commit validation
 
-`skills/` must stay byte-synced with the `plugins/` mirror, `.claude-plugin/marketplace.json`, and `llms.txt`. Four validators (`scripts/validate-*.sh`) enforce this and run three ways:
+`skills/` must stay byte-synced with the `plugins/` mirror, `.claude-plugin/marketplace.json`, and `llms.txt`. Every skill is versioned: `version:` in SKILL.md frontmatter must equal the plugin.json `"version"`, and any staged change under `plugins/<name>/` requires a version bump in the same commit (the installed-plugin cache keys on that version, so an unbumped change never reaches installed users). Five validators (`scripts/validate-*.sh`) enforce this and run three ways:
 
-- **Git-native (every clone — do this first):** run `git config core.hooksPath .githooks` once per clone. `.githooks/pre-commit` then runs all four validators and blocks the commit on failure. This is the source of truth and the only agent-independent layer.
+- **Git-native (every clone — do this first):** run `git config core.hooksPath .githooks` once per clone. `.githooks/pre-commit` then runs all five validators and blocks the commit on failure. This is the source of truth and the only agent-independent layer.
 - **Agent PreToolUse gate:** `.claude/settings.json` (Claude Code) and `.codex/hooks.json` (Codex) register `scripts/hook-precommit-sync.sh`, which runs the same validators before an agent's `git commit` and blocks it with exit code 2 on drift, so the agent sees the failure in-transcript. Codex additionally requires `[features].codex_hooks = true` in `~/.codex/config.toml` — a per-machine setting, not tracked in this repo.
 - **CI:** the same checks run on every PR.
 

@@ -30,6 +30,9 @@ run "SKILL.md description length (<= 1024 chars)" \
 run "Plugin / marketplace / llms.txt sync" \
     ./scripts/validate-plugin-sync.sh
 
+run "Version bump on staged plugin changes" \
+    ./scripts/validate-version-bump.sh
+
 run "react-audit skill structure" \
     ./scripts/validate-react-audit.sh
 

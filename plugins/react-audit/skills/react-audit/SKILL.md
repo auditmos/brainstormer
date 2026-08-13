@@ -1,5 +1,6 @@
 ---
 name: react-audit
+version: 0.1.1
 description: Audit a React/TSX repository for React anti-patterns by loading rule cards from the brainstormer card library, scanning via each card's declared detect strategy, and filing one grouped GitHub issue per `(skill, rule_id)` via the `gh` CLI. Phase 3 adds the full re-run lifecycle: `findIssueByLabel` lookup, in-place body rewrite bounded by `react-audit:managed:start/end` sentinels (human comments survive), close-with-dated-resolution on emptied findings, regression-with-backlink on resurfaced findings, label-collision protocol under concurrent runs, never-reopen invariant. Phase 2c grouped body (15 MVP cards, per-occurrence severity, `<details>` collapsibles) and Phase 2b smart scan (`SMART_SCAN_THRESHOLD=50`) unchanged. Manual invocation only — no hooks. Triggers on `/react-audit`, "audit this repo for react anti-patterns", "run a react audit". Skip design questions, scaffolding, audits of non-React frameworks (Vue, Svelte, Solid).
 ---
 

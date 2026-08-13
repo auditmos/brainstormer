@@ -1,5 +1,6 @@
 ---
 name: ask
+version: 1.1.0
 description: Discovery interview and requirements gathering session. Pressure-test an idea, architecture, or design decision through structured client interviews. Use when the user wants to be challenged on their thinking, explore trade-offs, or vet a plan before committing.
 ---
 

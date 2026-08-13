@@ -1,5 +1,6 @@
 ---
 name: brainstorm
+version: 1.1.0
 description: Orchestrated planning workflow — guides through discovery, PRD creation, vertical-slice phasing, and GitHub issue generation. Use when starting a new project or feature from scratch.
 ---
 

@@ -1,5 +1,6 @@
 ---
 name: agent-cli
+version: 2.0.1
 description: Design and audit CLIs that AI agents (Claude Code, Codex, automated pipelines) consume. Applies ten agent-native principles in two tiers — Tier 1 table stakes (non-interactive default, structured output, errors that enumerate, safe retries, bounded responses) and Tier 2 compounding (cross-CLI vocabulary, three-layer introspection, async-aware execution, persistent profiles, two-way I/O) — with a Blocker / Friction / Optimization severity rubric across six command classes (read, mutate, stream, bootstrap, async, config). Use when building, reviewing, or specifying a CLI for agent invocation, mentions argparse, click, cobra, clap, commander, yargs, oclif, thor, agent-friendly or agent-native CLI design, --json output, exit codes, idempotent commands, --wait flags, agent-context introspection, persistent profiles, --deliver routing, --force bypass, vocabulary consistency, or repos with cli.py, main.go, src/cli.rs, bin/<tool>. Skip general shell scripting and human-only TUIs.
 ---
 

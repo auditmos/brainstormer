@@ -1,5 +1,6 @@
 ---
 name: dispatch
+version: 1.1.0
 description: Convert a PRD into independently-grabbable GitHub issues using vertical slices. Use when the user wants to create issues from a PRD, break down a PRD into tasks, or create GitHub issues from requirements.
 ---
 

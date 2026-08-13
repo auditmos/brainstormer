@@ -143,7 +143,7 @@ Brainstormer is technology-agnostic at the planning layer. After the tech stack 
 
 ## Contributing
 
-After cloning, enable the repo's pre-commit hooks so SKILL.md descriptions, plugin/marketplace sync, and rule-card structure are validated before each commit:
+After cloning, enable the repo's pre-commit hooks so SKILL.md descriptions, plugin/marketplace sync, skill version bumps, and rule-card structure are validated before each commit:
 
 ```bash
 git config core.hooksPath .githooks

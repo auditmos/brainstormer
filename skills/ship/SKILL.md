@@ -1,5 +1,6 @@
 ---
 name: ship
+version: 1.0.1
 description: "Lint, type-check, commit, and push in one flow. Use when user says /ship or asks to commit+push."
 ---
 

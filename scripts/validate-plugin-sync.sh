@@ -105,6 +105,30 @@ if [[ -f "$marketplace_json" ]]; then
 fi
 
 # ---------------------------------------------------------------------------
+# Version sync: every regular skill declares `version:` in its SKILL.md
+# frontmatter, and it must equal the plugin.json "version". The installed-
+# plugin cache keys on that version (~/.claude/plugins/cache/<mkt>/<plugin>/
+# <version>/), so it is the release identity of the skill.
+# ---------------------------------------------------------------------------
+for skill_dir in "$REPO_ROOT"/skills/*/; do
+  skill_name=$(basename "$skill_dir")
+  is_shared_refs "$skill_dir" && continue
+  fm_version=$(awk '/^---$/{fm++; if(fm==2) exit; next} fm==1 && /^version:/{sub(/^version: */,""); print; exit}' "$skill_dir/SKILL.md")
+  pj="$REPO_ROOT/plugins/$skill_name/.claude-plugin/plugin.json"
+  pj_version=$(sed -n 's/.*"version": *"\([^"]*\)".*/\1/p' "$pj" 2>/dev/null | head -1)
+  if [[ -z "$fm_version" ]]; then
+    errors+=("VERSION:     skills/$skill_name/SKILL.md has no version: in frontmatter")
+  elif [[ ! "$fm_version" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+    errors+=("VERSION:     skills/$skill_name/SKILL.md version \"$fm_version\" is not semver (X.Y.Z)")
+  fi
+  if [[ -z "$pj_version" ]]; then
+    errors+=("VERSION:     plugins/$skill_name/.claude-plugin/plugin.json has no \"version\"")
+  elif [[ -n "$fm_version" && "$fm_version" != "$pj_version" ]]; then
+    errors+=("VERSION:     $skill_name SKILL.md frontmatter says $fm_version but plugin.json says $pj_version")
+  fi
+done
+
+# ---------------------------------------------------------------------------
 # llms.txt — index every SKILL.md (regular skills only) and every reference
 # ---------------------------------------------------------------------------
 llms_txt="$REPO_ROOT/llms.txt"

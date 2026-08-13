@@ -1,5 +1,6 @@
 ---
 name: lean
+version: 1.0.1
 description: Enforces MVP development principles — speed over perfection, utility first, simplicity. Use proactively when planning features, architecting solutions, reviewing code, or evaluating technical decisions to prevent over-engineering.
 ---
 

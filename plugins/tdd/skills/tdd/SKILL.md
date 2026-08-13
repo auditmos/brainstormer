@@ -1,5 +1,6 @@
 ---
 name: tdd
+version: 1.1.0
 description: Test-Driven Development workflow using vertical slices. Use when implementing features with TDD, writing tests before code, or doing red-green-refactor cycles.
 ---
 

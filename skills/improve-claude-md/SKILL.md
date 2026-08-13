@@ -1,5 +1,6 @@
 ---
 name: improve-claude-md
+version: 1.0.1
 description: Audit and improve CLAUDE.md files by wrapping conditionally-relevant sections in <important if> tags, removing linter territory, and ensuring project accuracy. Use when user wants to optimize their CLAUDE.md for better agent performance.
 ---
 
