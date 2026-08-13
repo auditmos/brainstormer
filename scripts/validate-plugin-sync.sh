@@ -187,6 +187,35 @@ if [[ -f "$llms_txt" ]]; then
   done < <(grep -oE '\]\(skills/[^)]+\)' "$llms_txt" | sed -E 's/^\]\(//; s/\)$//' | sort -u)
 fi
 
+# ---------------------------------------------------------------------------
+# Intra-skill link guard: every relative .md link inside a skills/ markdown
+# file must resolve to a real file. The dead-link guard above covers only
+# llms.txt — without this check, deleting or renaming a reference file breaks
+# the SKILL.md (or reference-to-reference) link silently at skill runtime.
+# Canonical tree only: pass 1/2 byte-sync guarantees mirrors match.
+# ---------------------------------------------------------------------------
+while IFS= read -r -d '' md_file; do
+  rel_file="${md_file#"$REPO_ROOT/"}"
+  md_dir=$(dirname "$md_file")
+  while IFS= read -r target; do
+    [[ -z "$target" ]] && continue
+    target="${target%%#*}"                          # drop #fragment
+    case "$target" in
+      ''|http://*|https://*|mailto:*|/*) continue ;; # external or absolute
+      *'{'*|*'<'*|*'...'*|*'…'*) continue ;;         # template placeholders
+    esac
+    [[ "$target" != *.md ]] && continue              # only markdown targets
+    if [[ "$target" == skills/* ]]; then
+      resolved="$REPO_ROOT/$target"                  # repo-root-relative (shared refs)
+    else
+      resolved="$md_dir/$target"                     # file-relative
+    fi
+    if [[ ! -f "$resolved" ]]; then
+      errors+=("LINK:        $rel_file -> $target (target missing)")
+    fi
+  done < <(grep -oE '\]\([^)]+\)' "$md_file" 2>/dev/null | sed -E 's/^\]\(//; s/\)$//' | sort -u)
+done < <(find "$REPO_ROOT/skills" -type f -name '*.md' -print0)
+
 if [[ ${#errors[@]} -gt 0 ]]; then
   echo "Plugin sync validation failed:"
   printf '  %s\n' "${errors[@]}"
