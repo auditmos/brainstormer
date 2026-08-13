@@ -109,7 +109,7 @@
     },
     {
       "name": "handoff",
-      "description": "Lossless chat-to-handoff distillation — produces .md and .txt for paste into Codex, Cursor, or another IDE-based agent",
+      "description": "Lossless chat-to-handoff distillation — produces a structured .md for paste into Codex, Cursor, or another IDE-based agent",
       "source": {
         "source": "git-subdir",
         "url": "https://github.com/auditmos/brainstormer.git",

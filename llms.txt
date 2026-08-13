@@ -16,7 +16,7 @@
 - [Improve CLAUDE.md — Structured Optimization](skills/improve-claude-md/SKILL.md): Audit and improve CLAUDE.md files by wrapping sections in conditional importance tags, removing linter overlap, and ensuring project accuracy
 - [LLM Council — Multi-Advisor Analysis](skills/llm-council/SKILL.md): Run a question through 5 AI advisors who analyze independently, peer-review anonymously, then synthesize a verdict
 - [Agent CLI — Design & Audit](skills/agent-cli/SKILL.md): Design and audit CLIs intended for AI agents using ten agent-native principles (Tier 1 table stakes + Tier 2 compounding) and a Blocker/Friction/Optimization severity rubric across six command classes (read/mutate/stream/bootstrap/async/config)
-- [Handoff — Chat-to-Handoff Distillation](skills/handoff/SKILL.md): Capture the current chat as a lossless structured handoff (.md + .txt) for Codex, Cursor, or other IDE-based agents
+- [Handoff — Chat-to-Handoff Distillation](skills/handoff/SKILL.md): Capture the current chat as a lossless structured handoff document for Codex, Cursor, or other IDE-based agents
 - [React Audit — Phase 3 Re-run Lifecycle](skills/react-audit/SKILL.md): Audit a React/TSX repository for React anti-patterns via each rule card's detect strategy, filing one grouped GitHub issue per (skill, rule_id) with per-occurrence file:line, context, and severity. Phase 3 adds the re-run lifecycle — findIssueByLabel lookup, in-place body rewrite bounded by react-audit:managed sentinels (human comments survive), close-with-dated-resolution, regression-with-backlink, never-reopen invariant. Phase 2c grouped body (15 MVP cards) and Phase 2b smart scan (SMART_SCAN_THRESHOLD=50) on top of Phase 2a's 11-card effects dispatch
 - [Orient — Zoom-Out Context Map](skills/orient/SKILL.md): One-shot prompt asking the agent to zoom out a layer of abstraction and return a map of relevant modules and callers using project domain vocabulary — for when you're unfamiliar with an area of code
 
@@ -37,7 +37,6 @@
 - [Handoff Output Template](skills/handoff/references/output-template.md): Section-by-section markdown structure for the handoff document
 - [Handoff Extraction Checklist](skills/handoff/references/extraction-checklist.md): Eleven categories of detail to pull out of the chat
 - [Handoff Code Status Tags](skills/handoff/references/code-status-tags.md): FINAL/SUPERSEDED/REJECTED/DRAFT semantics with truncation prohibition
-- [Handoff TXT Format](skills/handoff/references/txt-format.md): Markdown-to-plaintext substitution rules for the .txt variant
 - [Rule Card Index](skills/react-shared/references/cards/index.md): Pre-load lookup for the React audit skill suite — lists every shipping card by id and category
 - [Rule Card — effects/computing-derived-state](skills/react-shared/references/cards/effects/computing-derived-state.md): Anti-pattern card for useEffect that derives state from props or other state — bad/good snippets, llm-judge detection criteria, react.dev citation
 - [Rule Card — effects/transforming-data-for-render](skills/react-shared/references/cards/effects/transforming-data-for-render.md): useEffect filters/sorts/maps a list into state instead of computing during render

@@ -67,7 +67,7 @@ cd brainstormer
 | LLM Council | `/llm-council` | Multi-perspective advisory council for strategic decisions |
 | Improve CLAUDE.md | `/improve-claude-md` | Audit and optimize CLAUDE.md files with conditional importance tags |
 | Agent CLI | `/agent-cli` | Design and audit CLIs intended for AI agents — seven principles with severity rubric |
-| Handoff | `/handoff` | Capture the current chat as a structured handoff doc (.md + .txt) for Codex, Cursor, or another IDE agent |
+| Handoff | `/handoff` | Capture the current chat as a structured handoff doc for Codex, Cursor, or another IDE agent |
 | React Audit | `/react-audit` | Audit a React/TSX repo for React anti-patterns — one grouped GitHub issue per rule, with a full re-run lifecycle |
 | Orient | `/orient` | Zoom out a layer of abstraction — map relevant modules and callers in project vocabulary |
 

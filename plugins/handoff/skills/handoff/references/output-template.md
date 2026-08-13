@@ -119,5 +119,5 @@ Use this exact section order. Omit a section only if it would be empty — and p
 - **Order is fixed.** TL;DR first, Raw Notes last.
 - **Empty sections** prefer `_(none recorded in this session)_` over outright omission, so the receiving model knows nothing was lost.
 - **No em-dashes** anywhere in the output. Use `--` or commas.
-- **Tables** must use the markdown pipe format (the `.txt` renderer converts these to aligned plaintext).
+- **Tables** must use the markdown pipe format.
 - **Code Artifacts** is the heart of the document. Every code block in the chat appears here with a status tag — see [code-status-tags.md](./code-status-tags.md).
