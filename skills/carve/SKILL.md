@@ -13,11 +13,11 @@ Break a PRD into a phased implementation plan using vertical slices (tracer bull
 
 ### 1. Confirm the PRD is in context
 
-The PRD should already be in the conversation. If it isn't, ask the user to paste it or point you to the file.
+If it isn't, ask the user to paste it or point you to the file.
 
 ### 2. Identify durable architectural decisions
 
-**Reasoning approach:** Mentally trace 2-3 likely implementation paths through the PRD end-to-end. A "durable" decision is one all paths share. Reason through alternatives before listing — surface hidden assumptions, then prune. **Recommended for this step:** opus-4.7 with extended thinking (high effort).
+**Reasoning approach:** Mentally trace 2-3 likely implementation paths through the PRD end-to-end. A "durable" decision is one all paths share. Reason through alternatives before listing — surface hidden assumptions, then prune.
 
 Before slicing, identify high-level decisions that are unlikely to change throughout implementation:
 
@@ -31,35 +31,23 @@ These go in the plan header so every phase can reference them.
 
 ### 3. Draft vertical slices
 
-**Reasoning approach:** Hold the full PRD in mind while slicing. Each slice must cut through ALL integration layers — verify mentally before writing. Avoid horizontal-by-default thinking; if a phase only touches one layer, it's the wrong shape.
+**Reasoning approach:** Hold the full PRD in mind while slicing; verify each slice mentally before writing.
 
-Break the PRD into **tracer bullet** phases. Each phase is a thin vertical slice that cuts through ALL integration layers end-to-end, NOT a horizontal slice of one layer.
+Break the PRD into **tracer bullet** phases. Each phase is a thin vertical slice that cuts through ALL integration layers end-to-end, NOT a horizontal slice of one layer:
 
-Follow the rules in [vertical-slice-rules.md](./references/vertical-slice-rules.md).
+- Each slice delivers a narrow but COMPLETE path from user-facing behavior through to data persistence
+- A completed slice is demoable or verifiable on its own
+- Prefer many thin slices over few thick ones
+- Do NOT include specific file names, function names, or implementation details that are likely to change as later phases are built
+- DO include durable decisions: architecture style, data model shapes, entity names
 
 **Push back on slice creep.** Every slice must trace to an explicit user story in the PRD. If a draft slice includes functionality not in the PRD ("while we're in there, let's also add X"), cut X — propose it as a follow-up phase or send it back to `/blueprint`. Phases that drift past the PRD turn `/tdd` into an open-ended design exercise.
 
-**Acceptance criteria must be verifiable.** For each phase, every AC must be one of:
-
-- (a) **automated test** — a test exists or can be written that asserts the behavior,
-- (b) **observable artifact** — a row in a table, a file on disk, a log line, a metric, or
-- (c) **runnable command** — `make X`, `curl Y`, `psql -c "…"` that returns a known result.
-
-"It works" or "feature complete" do not qualify. If an AC can't be reduced to one of these three, sharpen it before the phase ships to `/dispatch` or `/tdd`.
+**Acceptance criteria must be verifiable.** Every AC must reduce to an automated test, an observable artifact, or a runnable command — the plan template shows the annotation format. "It works" or "feature complete" do not qualify; sharpen before the phase ships to `/dispatch` or `/tdd`.
 
 ### 4. Quiz the user
 
-Present the proposed breakdown as a numbered list. For each phase show:
-
-- **Title**: short descriptive name
-- **User stories covered**: which user stories from the PRD this addresses
-
-Ask the user:
-
-- Does the granularity feel right? (too coarse / too fine)
-- Should any phases be merged or split further?
-
-Iterate until the user approves the breakdown.
+Present the proposed breakdown as a numbered list showing each phase's title and the user stories from the PRD it covers. Ask whether the granularity feels right (too coarse / too fine) and whether any phases should be merged or split. Iterate until the user approves the breakdown.
 
 ### 5. Write the plan file
 

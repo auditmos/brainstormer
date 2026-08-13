@@ -19,11 +19,17 @@ If the PRD is not already in your context window, fetch it with `gh issue view <
 
 ### 2. Review existing context (optional)
 
-If available, review `./plans/` for related plan files and any prior session decisions to ensure issues align with established architectural choices.
+If available, review `./plans/` for related plans and prior architectural decisions.
 
 ### 3. Draft vertical slices
 
-Break the PRD into **tracer bullet** issues. Each issue is a thin vertical slice that cuts through ALL integration layers end-to-end, NOT a horizontal slice of one layer. Follow the rules in [vertical-slice-rules.md](./references/vertical-slice-rules.md).
+Break the PRD into **tracer bullet** issues. Each issue is a thin vertical slice that cuts through ALL integration layers end-to-end, NOT a horizontal slice of one layer:
+
+- Each slice delivers a narrow but COMPLETE path from user-facing behavior through to data persistence
+- A completed slice is demoable or verifiable on its own
+- Prefer many thin slices over few thick ones
+- Do NOT include specific file names, function names, or implementation details that are likely to change as later phases are built
+- DO include durable decisions: architecture style, data model shapes, entity names
 
 Slices may be 'HITL' or 'AFK'. HITL slices require human interaction, such as an architectural decision or a design review. AFK slices can be implemented and merged without human interaction. Prefer AFK over HITL where possible.
 
@@ -31,7 +37,7 @@ Slices may be 'HITL' or 'AFK'. HITL slices require human interaction, such as an
 
 > *Could an AFK agent picking up this issue tomorrow tell, by itself, whether the work is done — without asking anyone?*
 
-If the answer is no, the acceptance criteria are too weak. Sharpen them until each AC reduces to a test, an observable artifact, or a runnable command. AFK issues with vague ACs become HITL issues by accident — the agent stalls on "is this what you wanted?" and the parallelism collapses.
+If the answer is no, the acceptance criteria are too weak. Sharpen them until each AC reduces to a test, an observable artifact, or a runnable command. AFK issues with vague ACs become HITL issues by accident.
 
 **HITL issues are allowed subjective ACs**, but the issue must be explicitly marked HITL and the subjective gate named ("design review by @owner before merge"). Don't ship a subjective AC under an AFK label.
 
@@ -39,35 +45,12 @@ If the answer is no, the acceptance criteria are too weak. Sharpen them until ea
 
 ### 4. Quiz the user
 
-Present the proposed breakdown as a numbered list. For each slice, show:
-
-- **Title**: short descriptive name
-- **Type**: HITL / AFK
-- **Blocked by**: which other slices (if any) must complete first
-- **User stories covered**: which user stories from the PRD this addresses
-
-Ask the user:
-
-- Does the granularity feel right? (too coarse / too fine)
-- Are the dependency relationships correct?
-- Should any slices be merged or split further?
-- Are the correct slices marked as HITL and AFK?
-
-Iterate until the user approves the breakdown.
+Present the proposed breakdown as a numbered list showing each slice's title, type (HITL/AFK), blockers, and the user stories from the PRD it covers. Ask whether the granularity feels right (too coarse / too fine), the dependency relationships are correct, any slices should be merged or split, and the HITL/AFK labels are right. Iterate until the user approves the breakdown.
 
 ### 5. Create the GitHub issues
 
-For each approved slice, create a GitHub issue using `gh issue create`. Use the template in [issue-template.md](./references/issue-template.md).
+For each approved slice, create a GitHub issue using `gh issue create`. Use the template in [issue-template.md](./references/issue-template.md). Run `gh auth status` first; if it fails, inform the user and provide the fix command.
 
 Create issues in dependency order (blockers first) so you can reference real issue numbers in the "Blocked by" field.
 
 Do NOT close or modify the parent PRD issue.
-
-## Prerequisites
-
-Before creating GitHub issues, verify:
-1. `gh` CLI is installed and authenticated (`gh auth status`)
-2. Current directory is a git repo with a GitHub remote
-3. User has write access to the repository
-
-If any check fails, inform the user and provide the fix command.
