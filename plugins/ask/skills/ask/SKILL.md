@@ -9,83 +9,34 @@ Interview me relentlessly about every aspect of this plan until we reach a share
 
 **Ask the questions one at a time, waiting for feedback on each question before continuing.** Never batch or group questions, even when they feel tightly coupled — the client's answer to Q1 often reshapes Q2.
 
-## Interview Tracks
-
-Select and adapt tracks based on context. You do not need to cover every track — use judgment.
-
-### Track 1: Problem & Users
-
-- Who exactly has this problem? How many of them are there?
-- How do they solve it today? What's painful about the current approach?
-- What does success look like for the end user?
-- How will you measure whether this is working?
-- What happens if you don't build this?
-
-### Track 2: Business Model & Constraints
-
-- What's the revenue model? (Or: what justifies the investment?)
-- What's the budget and timeline?
-- How large is the team that will build and maintain this?
-- Are there existing commitments, contracts, or deadlines that constrain the solution?
-- Who are the stakeholders and what are their competing priorities?
-
-### Track 3: Scale & Operations
-
-- How many users do you expect at launch? In 12 months?
-- What's the data sensitivity level? (Public, internal, PII, regulated)
-- What are the uptime and availability requirements?
-- Geographic distribution — single region or multi-region?
-- Who handles support, and what does the support model look like?
-
-## Domain-Aware Probing
-
-If the conversation reveals domain-specific concerns, probe deeper:
-
-**HealthTech / Medical / Patient Data**
-- HIPAA compliance requirements and BAA needs
-- Audit trail and access logging requirements
-- Data retention and deletion policies
-- PHI handling and de-identification needs
-
-**Finance / Payments / Billing**
-- PCI-DSS scope and compliance level
-- SOC 2 requirements
-- Financial regulation considerations (state/federal)
-- Transaction audit and reconciliation needs
-
-**Multi-Tenant SaaS**
-- Data isolation strategy (logical vs. physical)
-- Tenant boundary enforcement
-- Per-tenant customization requirements
-- Tenant onboarding and offboarding processes
-
 ## Question Format
 
-See [question-format.md](./references/question-format.md) for numbering rules and answer option formatting.
+Number questions sequentially across the session (Q1, Q2, …). When proposing answer options, number them so the client can reply with just the number; free-form answers are always accepted.
+
+```
+**Q3.** What's the data sensitivity level?
+  1. Public
+  2. Internal only
+  3. Contains PII
+  4. Regulated (HIPAA, PCI, etc.)
+```
+
+## Interview Tracks
+
+Load [interview-tracks.md](./references/interview-tracks.md) when starting the interview — three question tracks (problem/users, business model, scale/ops) plus domain-aware probes for HealthTech, Finance, and multi-tenant SaaS. Select tracks by judgment; full coverage is not required.
 
 ## Surface, Don't Assume
 
 A discovery session is only as good as the assumptions it makes explicit. Three operational rules:
 
-**1. Restate every decision back before moving on.**
-After the client answers a non-trivial question, paraphrase the decision in your own words and wait for confirmation. Do not advance to the next question on a maybe.
+**1. Restate every decision back before moving on.** After the client answers a non-trivial question, paraphrase the decision in your own words and wait for confirmation. Do not advance on a maybe.
 
-> Client: "We want it multi-tenant."
-> You: "Reading back: multi-tenant means a single deployment serving multiple customer organizations with logical isolation between their data. Correct?"
-
-**2. Present alternatives when the answer is ambiguous.**
-When the client's answer admits 2-3 reasonable interpretations, do NOT pick silently. Surface the options and let them choose.
+**2. Present alternatives when the answer is ambiguous.** When an answer admits 2-3 reasonable interpretations, do NOT pick silently — surface the options and let the client choose.
 
 > Client: "We need multi-tenant."
 > You: "Multi-tenant can mean (a) shared DB with tenant_id columns, (b) schema-per-tenant in one DB, or (c) DB-per-tenant. Which matches what you have in mind?"
 
-**3. Push back when a feature smells premature.**
-If the client requests a capability that looks like premature optimization, premature scale, or premature flexibility, ask the simpler-version question BEFORE accepting the requirement. You are not arguing — you are testing the assumption.
-
-> Client: "We need real-time collaborative editing."
-> You: "Could v1 ship with last-write-wins or optimistic locking, and add operational transforms after the first cohort of users? What breaks if collaboration isn't real-time on day one?"
-
-The goal is to leave the session with an explicit list of named assumptions the client has signed off on — not a list of inferences you made.
+**3. Push back when a feature smells premature.** If a request looks like premature optimization, scale, or flexibility, ask the simpler-version question BEFORE accepting the requirement. You are not arguing — you are testing the assumption.
 
 ## Session Flow
 
@@ -93,16 +44,11 @@ The goal is to leave the session with an explicit list of named assumptions the 
 2. **Narrow**: Drill into constraints, blockers, and non-obvious dependencies. Challenge assumptions.
 3. **Synthesize**: Restate all decisions made, surface open questions, and confirm understanding.
 
-End every session with:
-- A summary of decisions made
-- A list of open questions that still need answers
-- Suggested next step (usually `/blueprint` if discovery is complete)
+End every session with a summary of decisions, the open questions that still need answers, the suggested next step (usually `/blueprint` if discovery is complete), and the explicit list of named assumptions the client has signed off on — not a list of inferences you made.
 
 ## Acceptance Checklist
 
-- [ ] Core problem clearly articulated
-- [ ] Target users identified and characterized
-- [ ] Key constraints and blockers surfaced
-- [ ] Compliance and regulatory needs addressed (if applicable)
-- [ ] Session summary produced with decisions and open questions
-- [ ] Explicit list of named assumptions (signed off by client) ready to hand off to `/blueprint`
+- [ ] Core problem articulated; target users identified and characterized
+- [ ] Key constraints, blockers, and compliance needs surfaced
+- [ ] Every non-trivial decision restated and confirmed
+- [ ] Signed-off list of named assumptions ready to hand to `/blueprint`

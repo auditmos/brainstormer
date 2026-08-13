@@ -25,7 +25,7 @@
 - [PRD Template](skills/blueprint/references/prd-template.md): Structure for Product Requirements Documents
 - [Plan Template](skills/carve/references/plan-template.md): Structure for phased implementation plans
 - [Issue Template](skills/dispatch/references/issue-template.md): Structure for GitHub dev issues
-- [Question Format](skills/ask/references/question-format.md): Interview question numbering and formatting
+- [Interview Tracks](skills/ask/references/interview-tracks.md): Three interview question tracks (problem/users, business model, scale/ops) plus domain-aware probes for HealthTech, Finance, and multi-tenant SaaS
 - [Mocking Patterns](skills/tdd/references/mocking.md): DI, SDK wrappers, and good vs bad mock examples
 - [CLAUDE.md Template](skills/improve-claude-md/references/claude-md-template.md): Ideal structure for CLAUDE.md files with conditional importance tags
 - [Important-If Catalog](skills/improve-claude-md/references/important-if-catalog.md): Curated conditions for wrapping CLAUDE.md sections by domain
