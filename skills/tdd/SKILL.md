@@ -13,10 +13,6 @@ description: Test-Driven Development workflow using vertical slices. Use when im
 /tdd #123 #124    — batch related issues into one TDD session
 ```
 
-When invoked with a GitHub issue, fetch the issue body with `gh issue view <number>` and use it as the scope for the planning step. The issue's acceptance criteria become the initial behavior list.
-
-If a plan exists in `./plans/` for the feature being implemented, read it for architectural decisions and phase context. Plans are created by `/carve` and contain vertical slices, durable decisions, and dependency ordering that should inform your test strategy.
-
 ## Philosophy
 
 Tests verify behavior through public interfaces, not implementation details. Code can change entirely; tests shouldn't. A good test reads like a specification — "user can checkout with valid cart" tells you exactly what capability exists.
@@ -27,8 +23,8 @@ Tests verify behavior through public interfaces, not implementation details. Cod
 
 Before writing any code:
 
-- If a GitHub issue was provided, review its scope and acceptance criteria
-- If a plan file exists in `./plans/`, review architectural decisions and phase boundaries
+- If a GitHub issue was provided, fetch it with `gh issue view <number>` (with comments); its acceptance criteria become the initial behavior list
+- If a plan file exists in `./plans/` (created by `/carve`), review its durable decisions and phase boundaries
 - Confirm what interface changes are needed
 - Confirm which behaviors to test (prioritize — you can't test everything)
 - Identify opportunities for deep modules (small interface, deep implementation)
@@ -47,9 +43,6 @@ Silent assumptions become test design choices that are expensive to reverse late
 
 **Stop and ask if an AC is ambiguous.** If an acceptance criterion in the issue or plan admits more than one reasonable interpretation, do NOT pick silently. Pause, surface the options, and ask. The entire test suite hangs off your interpretation — a wrong guess at this stage cascades through every RED→GREEN cycle that follows.
 
-> Issue AC: "Returns user's recent orders."
-> You: "Recent = last 30 days, last 10 orders, or whatever fits one screen? Each gives a different test design."
-
 ### 2. Tracer Bullet
 
 Write ONE test that confirms ONE thing about the system:
@@ -63,14 +56,7 @@ This proves the path works end-to-end.
 
 ### 3. Incremental Loop
 
-For each remaining behavior:
-
-```
-RED:   Write next test → fails
-GREEN: Minimal code to pass → passes
-```
-
-One test at a time. Only enough code to pass the current test. Don't anticipate future tests.
+Repeat the same RED→GREEN cycle for each remaining behavior. One test at a time; only enough code to pass the current test; don't anticipate future tests.
 
 ### 4. Refactor
 
@@ -91,59 +77,29 @@ Even while GREEN, keep changes surgical:
 - **Don't remove pre-existing dead code unless asked.** Only remove orphans your own changes created (unused imports, variables, helpers that nothing references after your edit).
 - **Match existing style** even if you'd write it differently. Stylistic refactors belong in their own PR.
 
-The test: imagine reading the diff cold. Could every changed line be traced to "needed for test X"? If not, the surplus lines need to come out.
-
 ## Anti-Pattern: Horizontal Slices
 
 **DO NOT write all tests first, then all implementation.**
 
 Tests written in bulk test _imagined_ behavior, not _actual_ behavior. You end up testing the shape of things rather than user-facing behavior. Tests become insensitive to real changes.
 
-```
-WRONG (horizontal):
-  RED:   test1, test2, test3, test4, test5
-  GREEN: impl1, impl2, impl3, impl4, impl5
-
-RIGHT (vertical):
-  RED→GREEN: test1→impl1
-  RED→GREEN: test2→impl2
-  RED→GREEN: test3→impl3
-```
-
 ## Conventions
 
 - Co-locate tests: `foo.test.ts` next to `foo.ts` (not a parallel `__tests__/` tree)
 - Wrap in `describe` named after the unit under test
 - Test names describe behavior: "calculates total for multiple items", not "test calculateTotal"
-- Coverage thresholds apply per file — simplify unreachable code rather than lowering thresholds
 
 ## Mocking Rules
 
-Mock **only** at system boundaries:
-
-- External APIs, databases, time (`Date.now`), randomness (`Math.random`), file system
-
-**Never** mock things you control:
-
-- Your own modules, internal collaborators, utility functions, data transformations
-
-If you feel the need to mock an internal module, the code is doing too much or you're testing at the wrong level.
-
-For patterns (dependency injection, SDK wrappers, examples of good vs bad mocks), see [mocking.md](./references/mocking.md).
+Mock **only** at system boundaries: external APIs, databases, time (`Date.now`), randomness (`Math.random`), file system. **Never** mock things you control — your own modules, internal collaborators, utilities, data transformations. If you feel the need to mock an internal module, the code is doing too much or you're testing at the wrong level. For patterns (dependency injection, SDK wrappers, good vs bad mocks), see [mocking.md](./references/mocking.md).
 
 ## Acceptance Checklist
 
 ```
-[ ] Assumptions stated before the first RED (input/output/boundary)
-[ ] AC interpretation confirmed with user (no silent picks on ambiguous ACs)
 [ ] Test describes behavior, not implementation
 [ ] Test uses the public interface
 [ ] Test would survive an internal refactor
 [ ] Mocks only at system boundaries
 [ ] Co-located next to source file
-[ ] Code is minimal for this test
-[ ] No speculative features added
 [ ] Every changed line traces to the current test (no adjacent improvements)
-[ ] Pre-existing dead code left untouched (mentioned in PR description if noticed)
-[ ] Coverage thresholds pass for the file under test
 ```
