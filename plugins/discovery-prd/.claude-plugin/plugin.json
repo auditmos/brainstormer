@@ -1,0 +1,8 @@
+{
+  "name": "discovery-prd",
+  "version": "0.1.0",
+  "description": "Discovery projektu i PRD w Markdown do ręcznego przekazania konsultantowi.",
+  "author": {
+    "name": "Auditmos"
+  }
+}

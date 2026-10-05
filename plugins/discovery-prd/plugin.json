@@ -1,0 +1,22 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "discovery-prd",
+  "version": "0.1.0",
+  "description": "Discovery projektu i PRD w Markdown do ręcznego przekazania konsultantowi.",
+  "author": {
+    "name": "Auditmos"
+  },
+  "extensions": {
+    "com.openai": {
+      "interface": {
+        "displayName": "Discovery → PRD",
+        "shortDescription": "Uporządkuj pomysł i przygotuj wymagania dla konsultanta.",
+        "longDescription": "Wywiad po jednym pytaniu, potwierdzanie ustaleń i PRD w Markdown. Pobierz dokument i samodzielnie wyślij go swojemu konsultantowi.",
+        "developerName": "Auditmos",
+        "category": "Productivity",
+        "capabilities": [],
+        "defaultPrompt": "Przeprowadź ze mną discovery projektu i przygotuj PRD w Markdown dla konsultanta."
+      }
+    }
+  }
+}

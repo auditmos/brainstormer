@@ -5,6 +5,7 @@
 
 ## Skills
 
+- [Discovery PRD — Client Intake](skills/discovery-prd/SKILL.md): Self-service client discovery ending in a confirmed or explicitly draft Markdown PRD for manual email handoff, with no GitHub or external service dependency
 - [Ask — Discovery Interview](skills/ask/SKILL.md): Pressure-test ideas through structured client interviews covering problem, users, business model, constraints, and domain-specific concerns
 - [Blueprint — PRD Creation](skills/blueprint/SKILL.md): Formalize discovery output into a Product Requirements Document, submitted as a GitHub issue
 - [Carve — PRD to Plan](skills/carve/SKILL.md): Break a PRD into tracer-bullet vertical slices saved as a phased implementation plan in ./plans/
@@ -22,6 +23,7 @@
 
 ## Templates & References
 
+- [Client Discovery PRD Template](skills/discovery-prd/references/prd-template.md): Business-facing requirements, acceptance criteria, confirmed assumptions, open questions, and manual handoff
 - [PRD Template](skills/blueprint/references/prd-template.md): Structure for Product Requirements Documents
 - [Plan Template](skills/carve/references/plan-template.md): Structure for phased implementation plans
 - [Issue Template](skills/dispatch/references/issue-template.md): Structure for GitHub dev issues

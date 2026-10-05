@@ -26,7 +26,7 @@ Consultants, product owners, founders, and technical leads — working with any 
 claude plugin install <repo-url>
 ```
 
-All 14 skills become available via `/` commands in any project.
+All 15 skills become available via `/` commands in any project.
 
 ### Manual Install (Claude Code)
 
@@ -58,6 +58,7 @@ cd brainstormer
 |-------|---------|---------|
 | Brainstorm | `/brainstorm` | Full orchestrated workflow — discovery through issue creation |
 | Ask | `/ask` | Discovery interview — pressure-test the idea, surface constraints |
+| Discovery PRD | `/discovery-prd` | Client-facing discovery with a Markdown PRD for manual handoff; no GitHub or email integration required |
 | Blueprint | `/blueprint` | Structured interview to produce a PRD (GitHub issue) |
 | Carve | `/carve` | Break PRD into phased vertical slices (`./plans/`) |
 | Dispatch | `/dispatch` | Create dependency-ordered GitHub issues from PRD |
@@ -72,6 +73,8 @@ cd brainstormer
 | Orient | `/orient` | Zoom out a layer of abstraction — map relevant modules and callers in project vocabulary |
 
 ## Recommended Workflow
+
+For self-service client discovery, start with [the Discovery PRD pilot guide](plans/discovery-prd-pilot.md). This standalone workflow adapts Ask and Blueprint into a single interview ending with a Markdown file for the client to send manually. The local prototype is not yet published in the public ChatGPT plugin directory.
 
 ### 1. Discovery — `/ask`
 

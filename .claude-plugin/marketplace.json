@@ -133,6 +133,20 @@
         "url": "https://github.com/auditmos/brainstormer.git",
         "path": "plugins/orient"
       }
+    },
+    {
+      "name": "discovery-prd",
+      "description": "Client-facing discovery and Markdown PRD for manual handoff",
+      "source": {
+        "source": "git-subdir",
+        "url": "https://github.com/auditmos/brainstormer.git",
+        "path": "plugins/discovery-prd"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
     }
   ]
 }
