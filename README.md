@@ -23,10 +23,11 @@ Consultants, product owners, founders, and technical leads — working with any 
 ### Claude Code Plugin
 
 ```bash
-claude plugin install <repo-url>
+claude plugin marketplace add auditmos/brainstormer
+claude plugin install ask@brainstormer   # one plugin per skill
 ```
 
-All 15 skills become available via `/` commands in any project.
+Each skill is its own plugin; install the ones you need. New here, or using the Claude Desktop app? Follow [QUICKSTART.md](./QUICKSTART.md).
 
 ### Manual Install (Claude Code)
 
