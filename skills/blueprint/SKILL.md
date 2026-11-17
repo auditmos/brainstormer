@@ -1,6 +1,6 @@
 ---
 name: blueprint
-version: 1.1.0
+version: 1.2.0
 description: Create a Product Requirements Document through structured interview. Use when the user wants to write a PRD, define requirements, or plan a new feature.
 ---
 
@@ -12,7 +12,9 @@ Work through the steps below; skip any you judge unnecessary.
 
 2. Interview the user relentlessly about every aspect of this plan until you reach a shared understanding. Walk down each branch of the design tree, resolving dependencies between decisions one-by-one.
 
-3. Sketch out the major functional components of the system. Actively look for opportunities to extract deep modules that can be verified independently.
+3. If the product has screens, agree on them before the PRD. Build a wireframe: one self-contained HTML file with every screen side by side in low fidelity (boxes and labels, no styling), each annotated with the user action that leads to the next screen. Annotate behavior, not technology. Start from the client's sketch or whiteboard photo if there is one, otherwise from the interview. Save it as `./plans/<feature>-wireframe.html`, show it to the client and iterate until they approve the screens. In the PRD, each user story names the screen it happens on.
+
+4. Sketch out the major functional components of the system. Actively look for opportunities to extract deep modules that can be verified independently.
 
 A deep module (as opposed to a shallow module) is one which encapsulates a lot of functionality in a simple, testable interface which rarely changes.
 
@@ -22,6 +24,6 @@ A deep module (as opposed to a shallow module) is one which encapsulates a lot o
 
 Check with the user that these components match their expectations. Check with the user which components they want validation criteria for.
 
-4. Once you have a complete understanding of the problem and solution, write the PRD using the template in [prd-template.md](./references/prd-template.md). The PRD should be submitted as a GitHub issue — run `gh auth status` first; if it fails, inform the user and provide the fix command.
+5. Once you have a complete understanding of the problem and solution, write the PRD using the template in [prd-template.md](./references/prd-template.md). The PRD should be submitted as a GitHub issue — run `gh auth status` first; if it fails, inform the user and provide the fix command.
 
 Before submitting, verify the PRD satisfies the template's own gates: every user story has a **Validation Strategy** entry (test scenario / observable artifact / runnable command), **Assumptions** enumerates every claim the design rests on, and **Tradeoffs considered** lists rejected alternatives with a one-line reason each.
